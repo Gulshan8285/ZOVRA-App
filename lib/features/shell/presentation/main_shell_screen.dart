@@ -34,8 +34,8 @@ class MainShellScreen extends ConsumerWidget {
           // Screen content
           navigationShell,
 
-          // Urban Company Floating Cart Dock (if cart has items and not currently viewing cart/checkout)
-          if (hasCartItems && currentIndex != 2)
+          // Urban Company Floating Cart Dock (if cart has items)
+          if (hasCartItems)
             Positioned(
               left: 16,
               right: 16,
@@ -181,22 +181,15 @@ class MainShellScreen extends ConsumerWidget {
                       context,
                       index: 2,
                       currentIndex: currentIndex,
-                      icon: Icons.calendar_today_rounded,
-                      label: 'Bookings',
+                      icon: Icons.search_rounded,
+                      label: 'Search',
                     ),
                     _buildNavItem(
                       context,
                       index: 3,
                       currentIndex: currentIndex,
-                      icon: Icons.local_offer_rounded,
-                      label: 'Offers',
-                    ),
-                    _buildNavItem(
-                      context,
-                      index: 4,
-                      currentIndex: currentIndex,
                       icon: Icons.person_rounded,
-                      label: 'Account',
+                      label: 'My Account',
                     ),
                   ],
                 ),

@@ -127,18 +127,21 @@ class CategoryGrid extends ConsumerWidget {
                           children: [
                             ClipRRect(
                               borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-                              child: Image.network(
-                                cat.imageUrl,
-                                width: double.infinity,
-                                height: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Container(
-                                  color: AppColors.surfaceMuted,
-                                  child: Center(
-                                    child: Icon(
-                                      _getCategoryIcon(cat.iconName),
-                                      color: AppColors.primary,
-                                      size: 28,
+                              child: Hero(
+                                tag: 'cat_img_${cat.id}',
+                                child: Image.network(
+                                  cat.imageUrl,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: AppColors.surfaceMuted,
+                                    child: Center(
+                                      child: Icon(
+                                        _getCategoryIcon(cat.iconName),
+                                        color: AppColors.primary,
+                                        size: 28,
+                                      ),
                                     ),
                                   ),
                                 ),

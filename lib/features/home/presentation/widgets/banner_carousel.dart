@@ -14,26 +14,29 @@ class BannerCarousel extends ConsumerStatefulWidget {
 }
 
 class _BannerCarouselState extends ConsumerState<BannerCarousel> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
+  static const int _kLoopMultiplier = 1000;
+  late final PageController _pageController;
+  int _currentRealIndex = 0;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    final banners = ref.read(bannersProvider);
+    final initialPage = banners.isNotEmpty ? (banners.length * (_kLoopMultiplier ~/ 2)) : 0;
+    _pageController = PageController(initialPage: initialPage);
     _startAutoPlay();
   }
 
   void _startAutoPlay() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (!mounted) return;
+      if (!mounted || !_pageController.hasClients) return;
       final banners = ref.read(bannersProvider);
       if (banners.isEmpty) return;
-      final nextPage = (_currentPage + 1) % banners.length;
-      _pageController.animateToPage(
-        nextPage,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 650),
+        curve: Curves.easeInOutCubic,
       );
     });
   }
@@ -57,16 +60,16 @@ class _BannerCarouselState extends ConsumerState<BannerCarousel> {
           height: 205,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: banners.length,
-            onPageChanged: (idx) => setState(() => _currentPage = idx),
+            itemCount: banners.length * _kLoopMultiplier,
+            onPageChanged: (idx) => setState(() => _currentRealIndex = idx % banners.length),
             itemBuilder: (context, index) {
-              final banner = banners[index];
+              final banner = banners[index % banners.length];
               return GestureDetector(
                 onTap: () {
                   if (banner.targetCategoryId != null) {
                     context.push('/category/${banner.targetCategoryId}');
                   } else {
-                    context.push('/explore');
+                    context.push('/search');
                   }
                 },
                 child: Container(
@@ -273,12 +276,12 @@ class _BannerCarouselState extends ConsumerState<BannerCarousel> {
             (i) => AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               margin: const EdgeInsets.symmetric(horizontal: 3),
-              width: _currentPage == i ? 20 : 6,
+              width: _currentRealIndex == i ? 20 : 6,
               height: 6,
               decoration: BoxDecoration(
-                color: _currentPage == i ? AppColors.primary : AppColors.border,
+                color: _currentRealIndex == i ? AppColors.primary : AppColors.border,
                 borderRadius: BorderRadius.circular(3),
-                boxShadow: _currentPage == i ? AppColors.electricGlow : null,
+                boxShadow: _currentRealIndex == i ? AppColors.electricGlow : null,
               ),
             ),
           ),

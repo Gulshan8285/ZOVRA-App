@@ -4,8 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/services/whatsapp_share_service.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/date_time_utils.dart';
 import '../../../core/widgets/confirmation_dialog.dart';
+import '../../../data/models/booking_model.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../bookings/providers/bookings_provider.dart';
 
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
@@ -14,6 +17,10 @@ class AccountScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final user = authState.user;
+    final bookingsState = ref.watch(bookingsProvider);
+    final upcoming = bookingsState.upcomingBookings;
+    final completed = bookingsState.completedBookings;
+    final cancelled = bookingsState.cancelledBookings;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -188,6 +195,193 @@ class AccountScreen extends ConsumerWidget {
               ),
             ),
 
+            const SizedBox(height: 18),
+
+            // DEDICATED MY BOOKINGS SECTION (Prominent feature inside My Account)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.border, width: 1),
+                boxShadow: AppColors.cardShadow,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryLight,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(Icons.calendar_month_rounded, color: AppColors.primary, size: 20),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'My Bookings',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                'Appointments, Invoices & Rebooking',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                        onTap: () => context.push('/bookings'),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          child: Row(
+                            children: [
+                              Text(
+                                'View All',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              const SizedBox(width: 2),
+                              const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.primary),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Status Summary Badges
+                  Row(
+                    children: [
+                      _buildBookingStatusPill(
+                        context,
+                        label: 'Upcoming',
+                        count: upcoming.length,
+                        color: AppColors.primary,
+                        bgColor: AppColors.primaryLight,
+                        onTap: () => context.push('/bookings'),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildBookingStatusPill(
+                        context,
+                        label: 'Completed',
+                        count: completed.length,
+                        color: AppColors.success,
+                        bgColor: AppColors.successLight,
+                        onTap: () => context.push('/bookings'),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildBookingStatusPill(
+                        context,
+                        label: 'Cancelled',
+                        count: cancelled.length,
+                        color: AppColors.textMuted,
+                        bgColor: AppColors.surfaceMuted,
+                        onTap: () => context.push('/bookings'),
+                      ),
+                    ],
+                  ),
+
+                  // Active upcoming booking snippet if available
+                  if (upcoming.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    const Divider(height: 1, color: AppColors.border),
+                    const SizedBox(height: 12),
+                    InkWell(
+                      onTap: () => context.push('/booking/${upcoming.first.id}'),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceMuted,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primaryLight,
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          upcoming.first.status.label.toUpperCase(),
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 9.5,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '#${upcoming.first.id}',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 11,
+                                          color: AppColors.textMuted,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    upcoming.first.items.isNotEmpty
+                                        ? upcoming.first.items.first.service.name
+                                        : 'Massage Appointment',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${DateTimeUtils.formatMediumDate(upcoming.first.scheduledDate)} · ${upcoming.first.timeSlot}',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios_rounded, size: 13, color: AppColors.textMuted),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
             const SizedBox(height: 20),
 
             // Section 1: Bookings & Activity
@@ -196,9 +390,9 @@ class AccountScreen extends ConsumerWidget {
             _buildMenuCard([
               _buildMenuItem(
                 icon: Icons.calendar_today_rounded,
-                title: 'My Bookings',
-                subtitle: 'Active appointments and history',
-                onTap: () => context.go('/bookings'),
+                title: 'All Appointments & History',
+                subtitle: 'Upcoming, completed, cancellation & rebooking',
+                onTap: () => context.push('/bookings'),
               ),
               _buildMenuItem(
                 icon: Icons.location_on_rounded,
@@ -224,7 +418,7 @@ class AccountScreen extends ConsumerWidget {
                 icon: Icons.local_offer_rounded,
                 title: 'Coupons & Discounts',
                 subtitle: 'Browse unlocked vouchers and promotional codes',
-                onTap: () => context.go('/offers'),
+                onTap: () => context.push('/account/offers'),
               ),
               _buildMenuItem(
                 icon: Icons.notifications_none_rounded,
@@ -236,22 +430,15 @@ class AccountScreen extends ConsumerWidget {
 
             const SizedBox(height: 20),
 
-            // Section 3: Help & Admin Tools
-            _buildSectionHeader('SUPPORT & TESTING TOOLS'),
+            // Section 3: Help & Support (No Admin Controls!)
+            _buildSectionHeader('SUPPORT & ASSISTANCE'),
             const SizedBox(height: 8),
             _buildMenuCard([
               _buildMenuItem(
                 icon: Icons.headset_mic_rounded,
                 title: 'Help & Support',
-                subtitle: 'FAQs, ticket creation, call & WhatsApp support',
+                subtitle: 'FAQs, ticket creation, direct call & WhatsApp support',
                 onTap: () => context.push('/support'),
-              ),
-              _buildMenuItem(
-                icon: Icons.admin_panel_settings_rounded,
-                title: 'Admin Controls & Live Testing',
-                subtitle: 'Manage catalog, change booking status live, add coupons',
-                highlight: true,
-                onTap: () => context.push('/admin'),
               ),
             ]),
 
@@ -431,6 +618,51 @@ class AccountScreen extends ConsumerWidget {
             )
           : null,
       trailing: const Icon(Icons.chevron_right_rounded, size: 20, color: AppColors.textMuted),
+    );
+  }
+
+  Widget _buildBookingStatusPill(
+    BuildContext context, {
+    required String label,
+    required int count,
+    required Color color,
+    required Color bgColor,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withOpacity(0.2)),
+          ),
+          child: Column(
+            children: [
+              Text(
+                '$count',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: color,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -9,6 +9,7 @@ import '../../../core/utils/date_time_utils.dart';
 import '../../../core/widgets/rating_chip.dart';
 import '../../../core/widgets/zovra_button.dart';
 import '../../../data/models/booking_model.dart';
+import '../../cart/providers/cart_provider.dart';
 import '../providers/bookings_provider.dart';
 import 'widgets/cancel_booking_dialog.dart';
 
@@ -59,6 +60,12 @@ class BookingDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        leading: context.canPop()
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                onPressed: () => context.pop(),
+              )
+            : null,
         title: Text(
           'Booking #${booking.id}',
           style: GoogleFonts.plusJakartaSans(
@@ -81,6 +88,11 @@ class BookingDetailScreen extends ConsumerWidget {
                     '${DateTimeUtils.formatMediumDate(booking.scheduledDate)}, ${booking.timeSlot}',
               );
             },
+          ),
+          IconButton(
+            tooltip: 'Return to Home',
+            icon: const Icon(Icons.home_rounded, color: AppColors.primary, size: 24),
+            onPressed: () => context.go('/'),
           ),
           const SizedBox(width: 8),
         ],
@@ -492,7 +504,28 @@ class BookingDetailScreen extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            // Official Tax Invoice Action
+            const SizedBox(height: 14),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 46),
+                side: const BorderSide(color: AppColors.primaryBorder),
+                backgroundColor: AppColors.surface,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              icon: const Icon(Icons.receipt_long_rounded, color: AppColors.primary, size: 19),
+              label: Text(
+                'View Official GST Tax Invoice',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+              onPressed: () => _showInvoiceDialog(context, booking),
+            ),
+
+            const SizedBox(height: 16),
 
             // Cancel Button if eligible
             if (booking.canBeCancelled) ...[
@@ -518,6 +551,7 @@ class BookingDetailScreen extends ConsumerWidget {
             ],
 
             if (booking.status == BookingStatus.completed && !booking.isReviewed) ...[
+              const SizedBox(height: 12),
               ZovraButton(
                 text: 'Rate & Review Service',
                 icon: const Icon(Icons.star_rounded, color: Colors.white, size: 18),
@@ -525,6 +559,48 @@ class BookingDetailScreen extends ConsumerWidget {
                 onPressed: () => context.push('/write-review/${booking.id}'),
               ),
             ],
+
+            if (booking.status == BookingStatus.completed || booking.status == BookingStatus.cancelled) ...[
+              const SizedBox(height: 12),
+              ZovraButton(
+                text: 'Rebook This Massage Therapy',
+                icon: const Icon(Icons.replay_rounded, color: Colors.white, size: 18),
+                height: 48,
+                onPressed: () {
+                  if (booking.items.isNotEmpty) {
+                    final item = booking.items.first;
+                    ref.read(cartProvider.notifier).addToCart(
+                          service: item.service,
+                          package: item.selectedPackage,
+                          addOns: item.selectedAddOns,
+                        );
+                    context.push('/cart');
+                  } else {
+                    context.push('/massage');
+                  }
+                },
+              ),
+            ],
+
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 46),
+                side: const BorderSide(color: AppColors.border),
+                backgroundColor: AppColors.surfaceMuted,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              icon: const Icon(Icons.home_outlined, color: AppColors.textPrimary, size: 19),
+              label: Text(
+                'Return to Home',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              onPressed: () => context.go('/'),
+            ),
           ],
         ),
       ),
@@ -536,6 +612,7 @@ class BookingDetailScreen extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
@@ -545,14 +622,18 @@ class BookingDetailScreen extends ConsumerWidget {
               color: isBold ? AppColors.textPrimary : AppColors.textSecondary,
             ),
           ),
-          Text(
-            value,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: isBold ? 15 : 13,
-              fontWeight: isBold ? FontWeight.w800 : FontWeight.w600,
-              color: isGreen
-                  ? AppColors.success
-                  : (isBold ? AppColors.textPrimary : AppColors.textSecondary),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: isBold ? 15 : 13,
+                fontWeight: isBold ? FontWeight.w800 : FontWeight.w600,
+                color: isGreen
+                    ? AppColors.success
+                    : (isBold ? AppColors.textPrimary : AppColors.textSecondary),
+              ),
             ),
           ),
         ],
@@ -658,6 +739,243 @@ class BookingDetailScreen extends ConsumerWidget {
             ),
           );
         }),
+      ),
+    );
+  }
+
+  void _showInvoiceDialog(BuildContext context, BookingModel booking) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        height: MediaQuery.of(ctx).size.height * 0.88,
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 8),
+              width: 44,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Tax Invoice Receipt',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, color: AppColors.textMuted),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            // Invoice Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'ZOVRA',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.5,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                'Doorstep Luxury Wellness Services',
+                                style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
+                              ),
+                              Text(
+                                'GSTIN: 07AABCZ1234F1Z5',
+                                style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.successLight,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.successBorder),
+                            ),
+                            child: Text(
+                              'PAID',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: AppColors.success,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+                      const Divider(),
+                      const SizedBox(height: 10),
+
+                      // Metadata
+                      _buildRow('Invoice No.', 'INV-${booking.id}'),
+                      _buildRow('Booking ID', '#${booking.id}'),
+                      _buildRow('Date of Service', '${DateTimeUtils.formatMediumDate(booking.scheduledDate)}, ${booking.timeSlot}'),
+                      _buildRow('SAC Code', '999721 (Wellness Therapies)'),
+                      _buildRow('Customer Name', booking.address.tag),
+                      _buildRow('Delivery Address', booking.address.shortAddress),
+
+                      const SizedBox(height: 12),
+                      const Divider(),
+                      const SizedBox(height: 10),
+
+                      // Line Items
+                      Text(
+                        'SERVICES RENDERED',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textMuted,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      ...booking.items.map((item) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${item.quantity}x ${item.service.name} (${item.selectedPackage?.title ?? ''})',
+                                  style: GoogleFonts.inter(fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                                ),
+                              ),
+                              Text(
+                                CurrencyFormatter.format(item.totalPrice),
+                                style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+
+                      const SizedBox(height: 10),
+                      const Divider(),
+                      const SizedBox(height: 10),
+
+                      // Financial Breakdown
+                      _buildRow('Subtotal', CurrencyFormatter.format(booking.subtotal)),
+                      if (booking.couponDiscount > 0)
+                        _buildRow('Coupon Discount (${booking.couponCode ?? ''})', '- ${CurrencyFormatter.format(booking.couponDiscount)}', isGreen: true),
+                      _buildRow('CGST (9%)', CurrencyFormatter.format(booking.taxAmount / 2)),
+                      _buildRow('SGST (9%)', CurrencyFormatter.format(booking.taxAmount / 2)),
+                      _buildRow('Safety & Visiting Fee', CurrencyFormatter.format(booking.platformFee)),
+                      const Divider(height: 18),
+                      _buildRow('Grand Total', CurrencyFormatter.format(booking.totalAmount), isBold: true),
+                      const Divider(height: 18),
+                      _buildRow('Payment Mode', booking.paymentMethod),
+                      _buildRow('Transaction Ref', booking.transactionId),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Bottom Action
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 48),
+                        side: const BorderSide(color: AppColors.border),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      icon: const Icon(Icons.download_rounded, size: 18, color: AppColors.textPrimary),
+                      label: Text(
+                        'Download PDF',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Tax Invoice INV-${booking.id} downloaded successfully.'),
+                            backgroundColor: AppColors.success,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        minimumSize: const Size(double.infinity, 48),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      icon: const Icon(Icons.home_rounded, size: 18, color: Colors.white),
+                      label: Text(
+                        'Done · Home',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        context.go('/');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

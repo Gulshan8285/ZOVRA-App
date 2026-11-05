@@ -17,7 +17,7 @@ class InitialData {
         id: 'cat_full_body',
         name: 'Full Body Massage',
         iconName: 'spa',
-        imageUrl: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&w=800&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80',
         description: 'Comprehensive head-to-toe therapeutic acupressure & tension relief.',
         sortOrder: 1,
         startingPrice: 849,
@@ -871,13 +871,14 @@ class InitialData {
     ];
   }
 
-  /// Sample initial verified reviews
+  /// Sample initial verified reviews across all therapies
   static List<ReviewModel> getReviews() {
     return [
+      // 1. Dry Massage Reviews
       ReviewModel(
         id: 'rev_1',
         serviceId: 'srv_dry_massage',
-        serviceName: 'Dry Full Body Massage',
+        serviceName: 'Dry Massage (No-Oil Acupressure)',
         userId: 'usr_arjun',
         userName: 'Arjun Khanna',
         rating: 5.0,
@@ -886,6 +887,46 @@ class InitialData {
         createdAt: DateTime.now().subtract(const Duration(days: 2)),
         isVerifiedBooking: true,
       ),
+      ReviewModel(
+        id: 'rev_1_b',
+        serviceId: 'srv_dry_massage',
+        serviceName: 'Dry Massage (No-Oil Acupressure)',
+        userId: 'usr_meera',
+        userName: 'Meera Sengupta',
+        rating: 4.9,
+        comment:
+            'Perfect choice for midday work fatigue! No oil meant I could get right back to my laptop without needing a shower. Incredible pressure on lower back knots.',
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
+        isVerifiedBooking: true,
+      ),
+
+      // 2. Swedish Massage Reviews
+      ReviewModel(
+        id: 'rev_3',
+        serviceId: 'srv_swedish_massage',
+        serviceName: 'Classic Swedish Massage',
+        userId: 'usr_sameer',
+        userName: 'Sameer Sen',
+        rating: 5.0,
+        comment:
+            'Unbelievably calming experience. Warm sweet almond oil, soft music, and absolute respect for privacy. Felt like an ultra-luxury retreat.',
+        createdAt: DateTime.now().subtract(const Duration(days: 6)),
+        isVerifiedBooking: true,
+      ),
+      ReviewModel(
+        id: 'rev_3_b',
+        serviceId: 'srv_swedish_massage',
+        serviceName: 'Classic Swedish Massage',
+        userId: 'usr_priya',
+        userName: 'Priya Nair',
+        rating: 4.9,
+        comment:
+            'The therapist had immaculate hygiene and used sealed single-use kit. The flowing effleurage strokes completely melted my stress away.',
+        createdAt: DateTime.now().subtract(const Duration(days: 9)),
+        isVerifiedBooking: true,
+      ),
+
+      // 3. Deep Tissue Reviews
       ReviewModel(
         id: 'rev_2',
         serviceId: 'srv_deep_tissue',
@@ -899,15 +940,151 @@ class InitialData {
         isVerifiedBooking: true,
       ),
       ReviewModel(
-        id: 'rev_3',
-        serviceId: 'srv_swedish_massage',
-        serviceName: 'Swedish Stress Relief Massage',
-        userId: 'usr_sameer',
-        userName: 'Sameer Sen',
+        id: 'rev_2_b',
+        serviceId: 'srv_deep_tissue',
+        serviceName: 'Deep Tissue Knot Release Therapy',
+        userId: 'usr_devendra',
+        userName: 'Devendra Singh',
+        rating: 4.9,
+        comment:
+            'Firm, targeted pressure exactly as requested. My lower lumbar stiffness has completely vanished after just 1 session.',
+        createdAt: DateTime.now().subtract(const Duration(days: 7)),
+        isVerifiedBooking: true,
+      ),
+
+      // 4. Aromatherapy Reviews
+      ReviewModel(
+        id: 'rev_4_a',
+        serviceId: 'srv_aromatherapy',
+        serviceName: 'Aromatherapy De-Stress Therapy',
+        userId: 'usr_ananya',
+        userName: 'Ananya Deshmukh',
         rating: 5.0,
         comment:
-            'Unbelievably calming experience. Warm sweet almond oil, soft music, and absolute respect for privacy. Felt like an ultra-luxury retreat.',
+            'The French organic lavender and ylang-ylang blend was sublime. I experienced the deepest, most restorative sleep that night. Exceptional hotel-standard quality.',
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        isVerifiedBooking: true,
+      ),
+      ReviewModel(
+        id: 'rev_4_b',
+        serviceId: 'srv_aromatherapy',
+        serviceName: 'Aromatherapy De-Stress Therapy',
+        userId: 'usr_siddharth',
+        userName: 'Siddharth Roy',
+        rating: 4.9,
+        comment:
+            'Therapist brought an ultrasonic aromatic diffuser and soothing ambient soundscapes. Pure luxury without stepping outside.',
+        createdAt: DateTime.now().subtract(const Duration(days: 8)),
+        isVerifiedBooking: true,
+      ),
+
+      // 5. Sports Massage Reviews
+      ReviewModel(
+        id: 'rev_5_a',
+        serviceId: 'srv_sports_massage',
+        serviceName: 'Sports & Muscle Recovery Therapy',
+        userId: 'usr_kabir',
+        userName: 'Kabir Mehta',
+        rating: 4.9,
+        comment:
+            'As an avid half-marathoner, this post-race recovery therapy was a lifesaver. Hamstrings, calves and IT band tightness unlocked in 60 minutes.',
+        createdAt: DateTime.now().subtract(const Duration(days: 4)),
+        isVerifiedBooking: true,
+      ),
+      ReviewModel(
+        id: 'rev_5_b',
+        serviceId: 'srv_sports_massage',
+        serviceName: 'Sports & Muscle Recovery Therapy',
+        userId: 'usr_aman',
+        userName: 'Aman Gupta',
+        rating: 5.0,
+        comment:
+            'Excellent cross-fiber friction and trigger point work. My range of motion improved immediately.',
+        createdAt: DateTime.now().subtract(const Duration(days: 10)),
+        isVerifiedBooking: true,
+      ),
+
+      // 6. Relaxation Massage Reviews
+      ReviewModel(
+        id: 'rev_6_a',
+        serviceId: 'srv_relaxation',
+        serviceName: 'ZOVRA Signature Relaxation Therapy',
+        userId: 'usr_neha',
+        userName: 'Neha Kapoor',
+        rating: 4.9,
+        comment:
+            'Calming, gentle, and zero rushing. The therapist was soft-spoken, confirmed pressure levels twice, and left the room spotless.',
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        isVerifiedBooking: true,
+      ),
+
+      // 7. Head & Shoulder Massage Reviews
+      ReviewModel(
+        id: 'rev_7_a',
+        serviceId: 'srv_head_shoulder',
+        serviceName: 'Head, Neck & Shoulder Tension Relief',
+        userId: 'usr_rahul',
+        userName: 'Rahul Joshi',
+        rating: 5.0,
+        comment:
+            'Relieved my 3-day screen fatigue headache in under 45 minutes. The occipital pressure release and temple circular rubs were heavenly.',
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
+        isVerifiedBooking: true,
+      ),
+
+      // 8. Back & Neck Massage Reviews
+      ReviewModel(
+        id: 'rev_8_a',
+        serviceId: 'srv_back_neck',
+        serviceName: 'Targeted Back & Neck Therapy',
+        userId: 'usr_sunita',
+        userName: 'Sunita Rao',
+        rating: 4.8,
+        comment:
+            'My chronic cervical tightness from long desk hours felt 90% better right after. Professional and respectful.',
         createdAt: DateTime.now().subtract(const Duration(days: 6)),
+        isVerifiedBooking: true,
+      ),
+
+      // 9. Foot Reflexology Reviews
+      ReviewModel(
+        id: 'rev_9_a',
+        serviceId: 'srv_foot_reflexology',
+        serviceName: 'Ancient Thai Foot Reflexology',
+        userId: 'usr_tanvi',
+        userName: 'Tanvi Patel',
+        rating: 5.0,
+        comment:
+            'Plantar acupressure was spot on! Therapist began with a soothing warm herbal foot cleanse. My feet felt so light afterwards.',
+        createdAt: DateTime.now().subtract(const Duration(days: 4)),
+        isVerifiedBooking: true,
+      ),
+
+      // 10. Couple Massage Reviews
+      ReviewModel(
+        id: 'rev_10_a',
+        serviceId: 'srv_couple_massage',
+        serviceName: 'Dual Harmony Couple Massage Experience',
+        userId: 'usr_karan',
+        userName: 'Karan & Shruti',
+        rating: 5.0,
+        comment:
+            'Booked for our anniversary celebration. Two senior therapists arrived with synchronized music and dual beds. Felt like an exotic resort in the comfort of our living room!',
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        isVerifiedBooking: true,
+      ),
+
+      // 11. Spa Ritual Reviews
+      ReviewModel(
+        id: 'rev_11_a',
+        serviceId: 'srv_spa_ritual',
+        serviceName: 'Imperial 5-Star Holistic Spa Experience',
+        userId: 'usr_malini',
+        userName: 'Malini Iyer',
+        rating: 5.0,
+        comment:
+            'The volcanic hot stone therapy and organic body scrub took this to an entirely different league. Worth every single rupee.',
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
         isVerifiedBooking: true,
       ),
     ];

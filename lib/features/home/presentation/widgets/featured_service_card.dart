@@ -13,12 +13,14 @@ class FeaturedServiceCard extends ConsumerWidget {
   final ServiceItem service;
   final bool isHorizontal;
   final double width;
+  final String? heroTag;
 
   const FeaturedServiceCard({
     super.key,
     required this.service,
     this.isHorizontal = true,
     this.width = 270,
+    this.heroTag,
   });
 
   @override
@@ -27,6 +29,7 @@ class FeaturedServiceCard extends ConsumerWidget {
     final inCart = cartState.items.where((i) => i.service.id == service.id).toList();
     final quantityInCart = inCart.fold(0, (sum, i) => sum + i.quantity);
     final savings = (service.originalPrice - service.discountedPrice).clamp(0.0, double.infinity);
+    final effectiveHeroTag = heroTag ?? 'srv_img_${service.id}_${isHorizontal ? 'h' : 'v'}';
 
     // Horizontal Carousel Card
     if (isHorizontal) {
@@ -39,7 +42,7 @@ class FeaturedServiceCard extends ConsumerWidget {
           boxShadow: AppColors.cardShadow,
         ),
         child: InkWell(
-          onTap: () => context.push('/service/${service.id}'),
+          onTap: () => context.push('/service/${service.id}', extra: effectiveHeroTag),
           borderRadius: BorderRadius.circular(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,15 +52,18 @@ class FeaturedServiceCard extends ConsumerWidget {
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Stack(
                   children: [
-                    Image.network(
-                      service.imageUrl,
-                      height: 140,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                    Hero(
+                      tag: effectiveHeroTag,
+                      child: Image.network(
+                        service.imageUrl,
                         height: 140,
-                        color: AppColors.surfaceMuted,
-                        child: const Icon(Icons.spa_outlined, size: 40, color: AppColors.textMuted),
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          height: 140,
+                          color: AppColors.surfaceMuted,
+                          child: const Icon(Icons.spa_outlined, size: 40, color: AppColors.textMuted),
+                        ),
                       ),
                     ),
                     // Rating Pill on bottom left
@@ -234,7 +240,7 @@ class FeaturedServiceCard extends ConsumerWidget {
         boxShadow: AppColors.cardShadow,
       ),
       child: InkWell(
-        onTap: () => context.push('/service/${service.id}'),
+        onTap: () => context.push('/service/${service.id}', extra: effectiveHeroTag),
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(14),
@@ -351,16 +357,19 @@ class FeaturedServiceCard extends ConsumerWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          service.imageUrl,
-                          width: 105,
-                          height: 105,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
+                        child: Hero(
+                          tag: effectiveHeroTag,
+                          child: Image.network(
+                            service.imageUrl,
                             width: 105,
                             height: 105,
-                            color: AppColors.surfaceMuted,
-                            child: const Icon(Icons.spa_outlined, color: AppColors.textMuted),
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 105,
+                              height: 105,
+                              color: AppColors.surfaceMuted,
+                              child: const Icon(Icons.spa_outlined, color: AppColors.textMuted),
+                            ),
                           ),
                         ),
                       ),

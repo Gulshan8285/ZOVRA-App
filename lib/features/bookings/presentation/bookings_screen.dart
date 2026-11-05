@@ -22,6 +22,12 @@ class BookingsScreen extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
+          leading: context.canPop()
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                  onPressed: () => context.pop(),
+                )
+              : null,
           title: Text(
             'My Bookings',
             style: GoogleFonts.plusJakartaSans(

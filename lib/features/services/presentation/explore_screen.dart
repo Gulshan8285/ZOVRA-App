@@ -7,7 +7,6 @@ import '../../../core/widgets/empty_view.dart';
 import '../../home/presentation/widgets/featured_service_card.dart';
 import '../../home/providers/home_provider.dart';
 import '../providers/services_provider.dart';
-import 'widgets/service_filter_sheet.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -69,15 +68,17 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         appBar: AppBar(
           backgroundColor: AppColors.surface,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
-            onPressed: () {
-              _focusNode.unfocus();
-              context.pop();
-            },
-          ),
+          leading: context.canPop()
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                  onPressed: () {
+                    _focusNode.unfocus();
+                    context.pop();
+                  },
+                )
+              : null,
           title: Text(
-            'Explore Massages',
+            'Search Massages',
             style: GoogleFonts.plusJakartaSans(
               fontSize: 18,
               fontWeight: FontWeight.w800,
@@ -87,97 +88,48 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         ),
         body: Column(
           children: [
-            // Urban Company Clean Search & Filter Header
+            // Clean Search Bar Header (No Three-Dot / Tune Filter Button)
             Container(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               color: AppColors.surface,
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.surfaceMuted,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: _focusNode.hasFocus ? AppColors.primary : AppColors.border,
-                              width: 1.2,
-                            ),
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            focusNode: _focusNode,
-                            style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
-                            onChanged: (val) {
-                              ref.read(exploreFilterProvider.notifier).setSearchQuery(val);
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              filled: false,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                              hintText: 'Search massage services, therapies and wellness...',
-                              hintStyle: GoogleFonts.inter(color: AppColors.textMuted, fontSize: 13),
-                              prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
-                              suffixIcon: _searchController.text.isNotEmpty
-                                  ? IconButton(
-                                      icon: const Icon(Icons.close_rounded, size: 18, color: AppColors.textMuted),
-                                      onPressed: () {
-                                        _searchController.clear();
-                                        ref.read(exploreFilterProvider.notifier).setSearchQuery('');
-                                      },
-                                    )
-                                  : null,
-                            ),
-                          ),
-                        ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceMuted,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: _focusNode.hasFocus ? AppColors.primary : AppColors.border,
+                        width: 1.2,
                       ),
-                      const SizedBox(width: 10),
-                      InkWell(
-                        onTap: () {
-                          _focusNode.unfocus();
-                          ServiceFilterSheet.show(context);
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: filterState.hasActiveFilters ? AppColors.primaryLight : AppColors.surfaceMuted,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: filterState.hasActiveFilters ? AppColors.primary : AppColors.border,
-                              width: 1,
-                            ),
-                          ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(
-                                Icons.tune_rounded,
-                                color: filterState.hasActiveFilters ? AppColors.primary : AppColors.textSecondary,
-                                size: 19,
-                              ),
-                              if (filterState.hasActiveFilters)
-                                Positioned(
-                                  top: 8,
-                                  right: 8,
-                                  child: Container(
-                                    width: 7,
-                                    height: 7,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.primary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _focusNode,
+                      style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+                      onChanged: (val) {
+                        ref.read(exploreFilterProvider.notifier).setSearchQuery(val);
+                      },
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        filled: false,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        hintText: 'Search 10 luxury therapies, packages & relief...',
+                        hintStyle: GoogleFonts.inter(color: AppColors.textMuted, fontSize: 13),
+                        prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.close_rounded, size: 18, color: AppColors.textMuted),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  ref.read(exploreFilterProvider.notifier).setSearchQuery('');
+                                },
+                              )
+                            : null,
                       ),
-                    ],
+                    ),
                   ),
 
                   const SizedBox(height: 12),

@@ -58,8 +58,9 @@ class LocalStorageService {
       await saveBookings(bookings);
     }
 
-    // Seed Reviews if not present
-    if (!_prefs.containsKey(AppConstants.keyReviews)) {
+    // Seed Reviews if not present or upgrade if seed has expanded
+    final existingReviews = getReviews();
+    if (!_prefs.containsKey(AppConstants.keyReviews) || existingReviews.length < InitialData.getReviews().length) {
       final reviews = InitialData.getReviews();
       await saveReviews(reviews);
     }

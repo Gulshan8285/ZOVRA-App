@@ -14,8 +14,13 @@ import '../../reviews/providers/reviews_provider.dart';
 
 class ServiceDetailScreen extends ConsumerStatefulWidget {
   final String serviceId;
+  final String? heroTag;
 
-  const ServiceDetailScreen({super.key, required this.serviceId});
+  const ServiceDetailScreen({
+    super.key,
+    required this.serviceId,
+    this.heroTag,
+  });
 
   @override
   ConsumerState<ServiceDetailScreen> createState() => _ServiceDetailScreenState();
@@ -121,10 +126,13 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      service.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(color: AppColors.surfaceMuted),
+                    Hero(
+                      tag: widget.heroTag ?? 'srv_img_${service.id}',
+                      child: Image.network(
+                        service.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(color: AppColors.surfaceMuted),
+                      ),
                     ),
                   ],
                 ),

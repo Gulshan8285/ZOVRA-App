@@ -9,19 +9,55 @@ import '../../../core/widgets/empty_view.dart';
 import '../../../core/widgets/zovra_button.dart';
 import '../../addresses/presentation/widgets/location_picker_sheet.dart';
 import '../../addresses/providers/address_provider.dart';
+import '../../offers/providers/offers_provider.dart';
 import '../providers/cart_provider.dart';
 import 'widgets/bill_summary_card.dart';
 import 'widgets/cart_item_tile.dart';
-import 'widgets/coupon_apply_sheet.dart';
 
-class CartScreen extends ConsumerWidget {
+class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends ConsumerState<CartScreen> {
+  final TextEditingController _couponInputController = TextEditingController();
+
+  @override
+  void dispose() {
+    _couponInputController.dispose();
+    super.dispose();
+  }
+
+  void _applyManualCoupon() {
+    final code = _couponInputController.text.trim();
+    if (code.isEmpty) return;
+
+    final success = ref.read(cartProvider.notifier).applyCoupon(code);
+    if (success) {
+      _couponInputController.clear();
+      FocusScope.of(context).unfocus();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Coupon $code applied successfully!'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } else {
+      final error = ref.read(cartProvider).couponError ?? 'Invalid or inactive coupon code';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error), backgroundColor: AppColors.error),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final cartState = ref.watch(cartProvider);
     final addressState = ref.watch(addressProvider);
     final selectedAddress = addressState.selectedAddress;
+    final availableOffers = ref.watch(offersProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -155,102 +191,299 @@ class CartScreen extends ConsumerWidget {
                         fontSize: 13,
                       ),
                     ),
-                    onPressed: () => context.go('/explore'),
+                    onPressed: () => context.push('/massage'),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
 
-                  // Coupon Section
+                  // AVAILABLE OFFERS FOR YOU SECTION (Directly inside Checkout)
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryLight,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.local_offer_rounded, size: 16, color: AppColors.primary),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Available Offers For You',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Manual Coupon Code Input Box
                   Container(
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: cartState.appliedCoupon != null
-                            ? AppColors.success
-                            : AppColors.border,
-                        width: cartState.appliedCoupon != null ? 1.4 : 1,
-                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: AppColors.border, width: 1),
                       boxShadow: AppColors.cardShadow,
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: cartState.appliedCoupon != null
-                                ? AppColors.successLight
-                                : AppColors.primaryLight,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            Icons.local_offer_rounded,
-                            color: cartState.appliedCoupon != null ? AppColors.success : AppColors.primary,
-                            size: 20,
+                        const Icon(Icons.confirmation_number_outlined, size: 18, color: AppColors.textMuted),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            controller: _couponInputController,
+                            textCapitalization: TextCapitalization.characters,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Enter coupon code (e.g. WELCOME20)',
+                              hintStyle: GoogleFonts.inter(
+                                fontSize: 12.5,
+                                color: AppColors.textMuted,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            onSubmitted: (_) => _applyManualCoupon(),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: cartState.appliedCoupon != null
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                        TextButton(
+                          onPressed: _applyManualCoupon,
+                          child: Text(
+                            'APPLY',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  if (cartState.appliedCoupon != null) ...[
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.successLight,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.successBorder),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 18),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Coupon ${cartState.appliedCoupon!.code} Applied!',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.success,
+                                  ),
+                                ),
+                                Text(
+                                  'Saved ${CurrencyFormatter.format(cartState.couponDiscount)} on this booking',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11.5,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              ref.read(cartProvider.notifier).removeCoupon();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Coupon removed.'), backgroundColor: AppColors.dark),
+                              );
+                            },
+                            child: Text(
+                              'REMOVE',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
+                  const SizedBox(height: 12),
+
+                  // List of Available Coupons
+                  ...availableOffers.map((coupon) {
+                    final isApplied = cartState.appliedCoupon?.code == coupon.code;
+                    final isEligible = cartState.subtotal >= coupon.minOrderAmount;
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isApplied
+                              ? AppColors.success
+                              : (isEligible ? AppColors.primaryBorder : AppColors.border),
+                          width: isApplied ? 1.5 : 1,
+                        ),
+                        boxShadow: AppColors.cardShadow,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: isApplied ? AppColors.successLight : AppColors.primaryLight,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: isApplied ? AppColors.success : AppColors.primary,
+                                    width: 1,
+                                    style: BorderStyle.solid,
+                                  ),
+                                ),
+                                child: Text(
+                                  coupon.code,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: isApplied ? AppColors.success : AppColors.primary,
+                                    letterSpacing: 0.8,
+                                  ),
+                                ),
+                              ),
+                              if (isApplied)
+                                Row(
                                   children: [
-                                    Text(
-                                      '${cartState.appliedCoupon!.code} Applied',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                        color: AppColors.success,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.successLight,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(Icons.check_rounded, size: 12, color: AppColors.success),
+                                          const SizedBox(width: 3),
+                                          Text(
+                                            'APPLIED',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 10.5,
+                                              fontWeight: FontWeight.w800,
+                                              color: AppColors.success,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      'Saved ${CurrencyFormatter.format(cartState.couponDiscount)} with this code',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 12,
-                                        color: AppColors.textSecondary,
+                                    const SizedBox(width: 8),
+                                    InkWell(
+                                      onTap: () {
+                                        ref.read(cartProvider.notifier).removeCoupon();
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Coupon removed.'), backgroundColor: AppColors.dark),
+                                        );
+                                      },
+                                      child: Text(
+                                        'REMOVE',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.error,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Coupons & Offers',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.textPrimary,
-                                      ),
+                              else
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isEligible ? AppColors.primary : AppColors.surfaceMuted,
+                                    foregroundColor: isEligible ? Colors.white : AppColors.textMuted,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                    minimumSize: const Size(60, 32),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                  onPressed: isEligible
+                                      ? () {
+                                          final success = ref.read(cartProvider.notifier).applyCoupon(coupon.code);
+                                          if (success) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Coupon ${coupon.code} applied!'),
+                                                backgroundColor: AppColors.success,
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      : null,
+                                  child: Text(
+                                    'APPLY',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 11.5,
+                                      fontWeight: FontWeight.w800,
                                     ),
-                                    Text(
-                                      'Save up to 50% on your massage',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 12,
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                        ),
-                        cartState.appliedCoupon != null
-                            ? TextButton(
-                                onPressed: () {
-                                  ref.read(cartProvider.notifier).removeCoupon();
-                                },
-                                child: const Text(
-                                  'Remove',
-                                  style: TextStyle(color: AppColors.error),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            coupon.description,
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                              height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Text(
+                                'Min. booking: ₹${coupon.minOrderAmount.toInt()}',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: isEligible ? AppColors.textMuted : AppColors.error,
                                 ),
-                              )
-                            : TextButton(
-                                onPressed: () => CouponApplySheet.show(context),
-                                child: const Text('Apply', style: TextStyle(color: AppColors.primary)),
                               ),
-                      ],
-                    ),
-                  ),
+                              const SizedBox(width: 10),
+                              Text(
+                                '• Valid till 31 Dec 2026',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
 
                   const SizedBox(height: 16),
 

@@ -24,6 +24,7 @@ import '../../features/reviews/presentation/service_reviews_screen.dart';
 import '../../features/reviews/presentation/write_review_sheet.dart';
 import '../../features/services/presentation/category_services_screen.dart';
 import '../../features/services/presentation/explore_screen.dart';
+import '../../features/services/presentation/massage_screen.dart';
 import '../../features/services/presentation/service_detail_screen.dart';
 import '../../features/shell/presentation/main_shell_screen.dart';
 import '../../features/support/presentation/create_ticket_screen.dart';
@@ -32,9 +33,8 @@ import '../../features/support/presentation/my_tickets_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorHomeKey = GlobalKey<NavigatorState>(debugLabel: 'shellHome');
-final _shellNavigatorExploreKey = GlobalKey<NavigatorState>(debugLabel: 'shellExplore');
-final _shellNavigatorBookingsKey = GlobalKey<NavigatorState>(debugLabel: 'shellBookings');
-final _shellNavigatorOffersKey = GlobalKey<NavigatorState>(debugLabel: 'shellOffers');
+final _shellNavigatorMassageKey = GlobalKey<NavigatorState>(debugLabel: 'shellMassage');
+final _shellNavigatorSearchKey = GlobalKey<NavigatorState>(debugLabel: 'shellSearch');
 final _shellNavigatorAccountKey = GlobalKey<NavigatorState>(debugLabel: 'shellAccount');
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -61,27 +61,49 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const WelcomeScreen(),
       ),
 
-      // Stateful Shell Route for Bottom Navigation Bar
+      // Stateful Shell Route for Bottom Navigation Bar (4 Branches: Home, Massage, Search, My Account)
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainShellScreen(navigationShell: navigationShell);
         },
         branches: [
-          // Branch 0: Home
+          // Branch 0: Home (with Category and Service Detail maintaining persistent bottom nav)
           StatefulShellBranch(
             navigatorKey: _shellNavigatorHomeKey,
             routes: [
               GoRoute(
                 path: '/',
                 builder: (context, state) => const HomeScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'category/:id',
+                    builder: (context, state) =>
+                        CategoryServicesScreen(categoryId: state.pathParameters['id']!),
+                  ),
+                ],
               ),
             ],
           ),
 
-          // Branch 1: Explore
+          // Branch 1: Massage Catalog
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorExploreKey,
+            navigatorKey: _shellNavigatorMassageKey,
             routes: [
+              GoRoute(
+                path: '/massage',
+                builder: (context, state) => const MassageScreen(),
+              ),
+            ],
+          ),
+
+          // Branch 2: Search (Explore)
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorSearchKey,
+            routes: [
+              GoRoute(
+                path: '/search',
+                builder: (context, state) => const ExploreScreen(),
+              ),
               GoRoute(
                 path: '/explore',
                 builder: (context, state) => const ExploreScreen(),
@@ -89,53 +111,45 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
 
-          // Branch 2: Bookings
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorBookingsKey,
-            routes: [
-              GoRoute(
-                path: '/bookings',
-                builder: (context, state) => const BookingsScreen(),
-              ),
-            ],
-          ),
-
-          // Branch 3: Offers
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorOffersKey,
-            routes: [
-              GoRoute(
-                path: '/offers',
-                builder: (context, state) => const OffersScreen(),
-              ),
-            ],
-          ),
-
-          // Branch 4: Account
+          // Branch 3: My Account (with dedicated My Bookings section)
           StatefulShellBranch(
             navigatorKey: _shellNavigatorAccountKey,
             routes: [
               GoRoute(
                 path: '/account',
                 builder: (context, state) => const AccountScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'bookings',
+                    builder: (context, state) => const BookingsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'offers',
+                    builder: (context, state) => const OffersScreen(),
+                  ),
+                ],
               ),
             ],
           ),
         ],
       ),
 
-      // Standalone Detail and Modal Screens
+      // Standalone Modal / Checkout / Detail Screens (Hiding Bottom Nav during checkout/payment/auth)
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/category/:id',
-        builder: (context, state) =>
-            CategoryServicesScreen(categoryId: state.pathParameters['id']!),
+        path: '/bookings',
+        builder: (context, state) => const BookingsScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/service/:id',
-        builder: (context, state) =>
-            ServiceDetailScreen(serviceId: state.pathParameters['id']!),
+        builder: (context, state) {
+          final heroTag = state.extra as String?;
+          return ServiceDetailScreen(
+            serviceId: state.pathParameters['id']!,
+            heroTag: heroTag,
+          );
+        },
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

@@ -81,16 +81,19 @@ class CategoryServicesScreen extends ConsumerWidget {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(14),
-                                  child: Image.network(
-                                    category.imageUrl,
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
+                                  child: Hero(
+                                    tag: 'cat_img_${category.id}',
+                                    child: Image.network(
+                                      category.imageUrl,
                                       width: 80,
                                       height: 80,
-                                      color: AppColors.primaryLight,
-                                      child: const Icon(Icons.spa_rounded, color: AppColors.primary),
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Container(
+                                        width: 80,
+                                        height: 80,
+                                        color: AppColors.primaryLight,
+                                        child: const Icon(Icons.spa_rounded, color: AppColors.primary),
+                                      ),
                                     ),
                                   ),
                                 ),
