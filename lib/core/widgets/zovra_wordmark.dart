@@ -51,3 +51,4 @@ class ZovraWordmark extends StatelessWidget {
     );
   }
 }
+
