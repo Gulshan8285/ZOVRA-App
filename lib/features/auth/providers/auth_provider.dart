@@ -53,10 +53,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> loginWithGoogle({String? email, String? name, String? photoUrl}) async {
+  Future<bool> loginWithGoogle() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final user = await _repository.loginWithGoogle(
+      final user = await _repository.loginWithGoogle();
+      if (user == null) {
+        state = state.copyWith(isLoading: false);
+        return false;
+      }
+      state = state.copyWith(user: user, isLoading: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> loginWithGoogleFallback({String? email, String? name, String? photoUrl}) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final user = await _repository.loginWithGoogleFallback(
         email: email,
         name: name,
         photoUrl: photoUrl,

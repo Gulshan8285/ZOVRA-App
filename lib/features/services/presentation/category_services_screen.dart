@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/widgets/empty_view.dart';
+import '../../../core/widgets/rating_chip.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../home/presentation/widgets/featured_service_card.dart';
 import '../../home/providers/home_provider.dart';
@@ -115,27 +116,9 @@ class CategoryServicesScreen extends ConsumerWidget {
                                               ),
                                             ),
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primaryLight,
-                                              borderRadius: BorderRadius.circular(6),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Icon(Icons.star_rounded, size: 12, color: AppColors.ratingGold),
-                                                const SizedBox(width: 2),
-                                                Text(
-                                                  '${category.rating}',
-                                                  style: GoogleFonts.inter(
-                                                    color: AppColors.primary,
-                                                    fontSize: 10.5,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                          RatingChip(
+                                            rating: category.rating,
+                                            compact: true,
                                           ),
                                         ],
                                       ),

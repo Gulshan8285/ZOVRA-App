@@ -58,10 +58,89 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   }
 
   Future<void> _handleGoogleLogin() async {
-    await ref.read(authProvider.notifier).loginWithGoogle();
-    if (mounted) {
-      context.go('/');
+    try {
+      final success = await ref.read(authProvider.notifier).loginWithGoogle();
+      if (success && mounted) {
+        context.go('/');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showGoogleAuthDialog(e.toString());
     }
+  }
+
+  void _showGoogleAuthDialog(String errorDetails) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Image.network(
+              'https://www.gstatic.com/images/branding/product/2x/googleg_48dp.png',
+              width: 24,
+              height: 24,
+              errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, color: AppColors.primary),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'Google Sign-In',
+              style: GoogleFonts.plusJakartaSans(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Google Sign-In authentication was initiated. If your Google Cloud project is not yet linked to this build SHA-1 fingerprint, follow these details:',
+              style: GoogleFonts.inter(fontSize: 12.5, color: AppColors.textPrimary, height: 1.4),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceMuted,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Text(
+                'Package: com.zovra.zovra\nSHA-1: C7:1A:70:83:9E:E9:C1:69:27:E7:E0:9B:C3:31:B7:6B:82:86:D8:7F\n\nLog: $errorDetails',
+                style: GoogleFonts.inter(fontSize: 10.5, color: AppColors.textSecondary),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'You can continue in Google Profile Mode now:',
+              style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Cancel', style: GoogleFonts.inter(color: AppColors.textSecondary)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await ref.read(authProvider.notifier).loginWithGoogleFallback();
+              if (mounted) context.go('/');
+            },
+            child: Text(
+              'Continue with Profile',
+              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -250,26 +329,32 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         ),
                       ),
                       onPressed: authState.isLoading ? null : _handleGoogleLogin,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.network(
-                            'https://www.gstatic.com/images/branding/product/2x/googleg_48dp.png',
-                            width: 20,
-                            height: 20,
-                            errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 24),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Continue with Google',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                      child: authState.isLoading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.network(
+                                  'https://www.gstatic.com/images/branding/product/2x/googleg_48dp.png',
+                                  width: 22,
+                                  height: 22,
+                                  errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 24),
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Continue with Google',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
 

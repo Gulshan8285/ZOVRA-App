@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/rating_chip.dart';
 import '../../providers/home_provider.dart';
 
 class CategoryGrid extends ConsumerWidget {
@@ -151,33 +152,10 @@ class CategoryGrid extends ConsumerWidget {
                             Positioned(
                               top: 8,
                               right: 8,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.92),
-                                  borderRadius: BorderRadius.circular(6),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.08),
-                                      blurRadius: 4,
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.star_rounded, size: 12, color: AppColors.ratingGold),
-                                    const SizedBox(width: 2),
-                                    Text(
-                                      '${cat.rating}',
-                                      style: GoogleFonts.inter(
-                                        color: AppColors.textPrimary,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              child: RatingChip(
+                                rating: cat.rating,
+                                compact: true,
+                                onImage: true,
                               ),
                             ),
                           ],

@@ -7,6 +7,16 @@ import 'package:zovra/data/seeds/initial_data.dart';
 
 void main() {
   group('ZOVRA Core Unit Tests', () {
+    test('Categories and services have 100% unique images without duplicates', () {
+      final categories = InitialData.getCategories();
+      final categoryImages = categories.map((c) => c.imageUrl).toSet();
+      expect(categoryImages.length, equals(categories.length), reason: 'Every category must have a unique image');
+
+      final services = InitialData.getServices();
+      final serviceImages = services.map((s) => s.imageUrl).toSet();
+      expect(serviceImages.length, equals(services.length), reason: 'Every service must have a unique image');
+    });
+
     test('Initial services catalogue contains required categories', () {
       final categories = InitialData.getCategories();
       expect(categories.length, equals(10));

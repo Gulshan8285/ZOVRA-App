@@ -72,48 +72,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
 
-              // WhatsApp Share Pill Banner
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: InkWell(
-                  onTap: () => WhatsAppShareService.shareApp(),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                    decoration: BoxDecoration(
-                      color: AppColors.whatsapp.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.whatsapp.withOpacity(0.35), width: 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(
-                            color: AppColors.whatsapp,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.share_rounded, color: Colors.white, size: 12),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Share ZOVRA wellness with friends & family on WhatsApp',
-                            style: GoogleFonts.inter(
-                              color: AppColors.textPrimary,
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const Icon(Icons.arrow_forward_ios_rounded, size: 11, color: AppColors.whatsapp),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
+              const SizedBox(height: 14),
 
               // Promotional Editorial Banners Carousel
               const BannerCarousel(),

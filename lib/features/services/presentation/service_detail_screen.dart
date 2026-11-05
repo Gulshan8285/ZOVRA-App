@@ -64,6 +64,34 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
     final currentPrice = basePrice + addOnsPrice;
     final currentOriginalPrice = baseOriginalPrice + addOnsPrice;
 
+    // Recommended therapies excluding the currently opened service
+    final allServices = repo.getServices();
+    final otherServices = allServices.where((s) => s.id != service.id).toList();
+
+    List<ServiceItem> recommended;
+    if (service.id == 'srv_dry_massage' || service.categoryId == 'cat_full_body') {
+      recommended = otherServices
+          .where((s) => ['srv_relaxation', 'srv_swedish_massage', 'srv_aromatherapy'].contains(s.id))
+          .toList();
+    } else if (service.id == 'srv_head_shoulder' || service.categoryId == 'cat_head_shoulder') {
+      recommended = otherServices
+          .where((s) => ['srv_back_neck', 'srv_relaxation', 'srv_deep_tissue'].contains(s.id))
+          .toList();
+    } else if (service.id == 'srv_foot_reflexology' || service.categoryId == 'cat_foot_reflexology') {
+      recommended = otherServices
+          .where((s) => ['srv_relaxation', 'srv_spa_ritual', 'srv_swedish_massage'].contains(s.id))
+          .toList();
+    } else {
+      recommended = otherServices.where((s) => s.categoryId == service.categoryId).toList();
+    }
+
+    for (final item in otherServices) {
+      if (recommended.length >= 4) break;
+      if (!recommended.contains(item)) {
+        recommended.add(item);
+      }
+    }
+
     // Check if this service is in cart
     final inCartItems =
         cartState.items.where((i) => i.service.id == service.id).toList();
@@ -529,6 +557,170 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
                           );
                         }).toList(),
                       ),
+
+                    // Recommended For You / You May Also Like Section
+                    if (recommended.isNotEmpty) ...[
+                      const SizedBox(height: 32),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Recommended for You',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Clients also frequently booked these therapies',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11.5,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      SizedBox(
+                        height: 232,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: recommended.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 12),
+                          itemBuilder: (context, index) {
+                            final rec = recommended[index];
+                            return Container(
+                              width: 195,
+                              decoration: BoxDecoration(
+                                color: AppColors.surface,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: AppColors.border),
+                                boxShadow: AppColors.cardShadow,
+                              ),
+                              child: InkWell(
+                                onTap: () => context.push('/service/${rec.id}'),
+                                borderRadius: BorderRadius.circular(14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(13)),
+                                      child: Stack(
+                                        children: [
+                                          Image.network(
+                                            rec.imageUrl,
+                                            height: 110,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) => Container(
+                                              height: 110,
+                                              color: AppColors.surfaceMuted,
+                                              child: const Icon(Icons.spa_rounded, color: AppColors.textMuted),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 6,
+                                            left: 6,
+                                            child: RatingChip(
+                                              rating: rec.rating,
+                                              compact: true,
+                                              onImage: true,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 6,
+                                            right: 6,
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+                                              decoration: BoxDecoration(
+                                                color: Colors.black.withOpacity(0.65),
+                                                borderRadius: BorderRadius.circular(5),
+                                              ),
+                                              child: Text(
+                                                '${rec.durationMinutes}m',
+                                                style: GoogleFonts.inter(
+                                                  color: Colors.white,
+                                                  fontSize: 9.5,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            rec.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 12.5,
+                                              fontWeight: FontWeight.w800,
+                                              color: AppColors.textPrimary,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            rec.shortDescription,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.inter(
+                                              fontSize: 10.5,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                CurrencyFormatter.format(rec.discountedPrice),
+                                                style: GoogleFonts.plusJakartaSans(
+                                                  fontSize: 13.5,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: AppColors.textPrimary,
+                                                ),
+                                              ),
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.primary,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: Text(
+                                                  'View',
+                                                  style: GoogleFonts.plusJakartaSans(
+                                                    fontSize: 10.5,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
 
                     const SizedBox(height: 80),
                   ],

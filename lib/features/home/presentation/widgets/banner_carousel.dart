@@ -215,7 +215,7 @@ class _BannerCarouselState extends ConsumerState<BannerCarousel> {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.inter(
-                                    color: AppColors.textSecondary,
+                                    color: Colors.white.withOpacity(0.88),
                                     fontSize: 11,
                                     height: 1.35,
                                   ),

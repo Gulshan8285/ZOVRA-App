@@ -74,6 +74,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                         rating: service.rating,
                         reviewCount: service.reviewCount,
                         compact: true,
+                        onImage: true,
                       ),
                     ),
                     // Duration on bottom right
