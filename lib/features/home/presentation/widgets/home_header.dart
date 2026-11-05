@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/zovra_wordmark.dart';
 import '../../../addresses/presentation/widgets/location_picker_sheet.dart';
 import '../../../addresses/providers/address_provider.dart';
 import '../../../auth/providers/auth_provider.dart';
@@ -27,33 +28,7 @@ class HomeHeader extends ConsumerWidget {
       child: Row(
         children: [
           // ZOVRA Urban Brand Mark
-          InkWell(
-            onTap: () {},
-            borderRadius: BorderRadius.circular(8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'ZOVRA',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.5,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Container(
-                  width: 5,
-                  height: 5,
-                  margin: const EdgeInsets.only(left: 3, top: 4),
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const ZovraWordmark(fontSize: 20),
 
           const SizedBox(width: 14),
 

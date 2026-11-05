@@ -40,7 +40,7 @@ class MyTicketsScreen extends ConsumerWidget {
               onAction: () => context.push('/support/create'),
             )
           : ListView.separated(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
               itemCount: tickets.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {

@@ -29,7 +29,7 @@ class OffersScreen extends ConsumerWidget {
         ),
       ),
       body: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 90),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
         itemCount: coupons.length,
         separatorBuilder: (_, __) => const SizedBox(height: 14),
         itemBuilder: (context, index) {

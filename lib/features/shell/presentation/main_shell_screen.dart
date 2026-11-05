@@ -174,7 +174,7 @@ class MainShellScreen extends ConsumerWidget {
                       context,
                       index: 1,
                       currentIndex: currentIndex,
-                      icon: Icons.spa_rounded,
+                      icon: Icons.self_improvement_rounded,
                       label: 'Massage',
                     ),
                     _buildNavItem(

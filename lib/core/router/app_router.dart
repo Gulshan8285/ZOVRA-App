@@ -7,7 +7,6 @@ import '../../features/account/presentation/payment_history_screen.dart';
 import '../../features/account/presentation/static_page_screen.dart';
 import '../../features/addresses/presentation/add_edit_address_screen.dart';
 import '../../features/addresses/presentation/address_list_screen.dart';
-import '../../features/admin/presentation/admin_control_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/bookings/presentation/booking_detail_screen.dart';
@@ -61,13 +60,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const WelcomeScreen(),
       ),
 
-      // Stateful Shell Route for Bottom Navigation Bar (4 Branches: Home, Massage, Search, My Account)
+      // Stateful Shell Route for Persistent 4-Tab Bottom Navigation Bar:
+      // 1. Home
+      // 2. Massage
+      // 3. Search
+      // 4. My Account (along with all nested customer-facing sub-screens)
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainShellScreen(navigationShell: navigationShell);
         },
         branches: [
-          // Branch 0: Home (with Category and Service Detail maintaining persistent bottom nav)
+          // Branch 0: Home (with Category Services maintaining persistent bottom nav)
           StatefulShellBranch(
             navigatorKey: _shellNavigatorHomeKey,
             routes: [
@@ -111,35 +114,97 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
 
-          // Branch 3: My Account (with dedicated My Bookings section)
+          // Branch 3: My Account & Nested Customer Experience (Maintaining Persistent Bottom Nav)
           StatefulShellBranch(
             navigatorKey: _shellNavigatorAccountKey,
             routes: [
               GoRoute(
                 path: '/account',
                 builder: (context, state) => const AccountScreen(),
+              ),
+              GoRoute(
+                path: '/bookings',
+                builder: (context, state) {
+                  final tabStr = state.uri.queryParameters['tab'];
+                  final initialTab = tabStr != null ? int.tryParse(tabStr) ?? 0 : 0;
+                  return BookingsScreen(initialTabIndex: initialTab);
+                },
+              ),
+              GoRoute(
+                path: '/booking/:id',
+                builder: (context, state) =>
+                    BookingDetailScreen(bookingId: state.pathParameters['id']!),
+              ),
+              GoRoute(
+                path: '/account/offers',
+                builder: (context, state) => const OffersScreen(),
+              ),
+              GoRoute(
+                path: '/coupons',
+                builder: (context, state) => const OffersScreen(),
+              ),
+              GoRoute(
+                path: '/addresses',
+                builder: (context, state) => const AddressListScreen(),
                 routes: [
                   GoRoute(
-                    path: 'bookings',
-                    builder: (context, state) => const BookingsScreen(),
+                    path: 'add',
+                    builder: (context, state) => const AddEditAddressScreen(),
                   ),
                   GoRoute(
-                    path: 'offers',
-                    builder: (context, state) => const OffersScreen(),
+                    path: 'edit/:id',
+                    builder: (context, state) =>
+                        AddEditAddressScreen(addressId: state.pathParameters['id']),
                   ),
                 ],
+              ),
+              GoRoute(
+                path: '/notifications',
+                builder: (context, state) => const NotificationsScreen(),
+              ),
+              GoRoute(
+                path: '/profile/edit',
+                builder: (context, state) => const EditProfileScreen(),
+              ),
+              GoRoute(
+                path: '/account/payments',
+                builder: (context, state) => const PaymentHistoryScreen(),
+              ),
+              GoRoute(
+                path: '/support',
+                builder: (context, state) => const HelpSupportScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'create',
+                    builder: (context, state) => const CreateTicketScreen(),
+                  ),
+                  GoRoute(
+                    path: 'tickets',
+                    builder: (context, state) => const MyTicketsScreen(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: '/legal/:slug',
+                builder: (context, state) =>
+                    StaticPageScreen(slug: state.pathParameters['slug']!),
+              ),
+              GoRoute(
+                path: '/reviews/:serviceId',
+                builder: (context, state) =>
+                    ServiceReviewsScreen(serviceId: state.pathParameters['serviceId']!),
+              ),
+              GoRoute(
+                path: '/write-review/:bookingId',
+                builder: (context, state) =>
+                    WriteReviewScreen(bookingId: state.pathParameters['bookingId']!),
               ),
             ],
           ),
         ],
       ),
 
-      // Standalone Modal / Checkout / Detail Screens (Hiding Bottom Nav during checkout/payment/auth)
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/bookings',
-        builder: (context, state) => const BookingsScreen(),
-      ),
+      // Standalone Full-Screen Modal / Checkout Screens (Dedicated checkout journey)
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/service/:id',
@@ -179,81 +244,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         path: '/checkout/failure',
         builder: (context, state) => const PaymentFailureScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/booking/:id',
-        builder: (context, state) =>
-            BookingDetailScreen(bookingId: state.pathParameters['id']!),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/addresses',
-        builder: (context, state) => const AddressListScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/addresses/add',
-        builder: (context, state) => const AddEditAddressScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/addresses/edit/:id',
-        builder: (context, state) =>
-            AddEditAddressScreen(addressId: state.pathParameters['id']),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/notifications',
-        builder: (context, state) => const NotificationsScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/reviews/:serviceId',
-        builder: (context, state) =>
-            ServiceReviewsScreen(serviceId: state.pathParameters['serviceId']!),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/write-review/:bookingId',
-        builder: (context, state) =>
-            WriteReviewScreen(bookingId: state.pathParameters['bookingId']!),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/profile/edit',
-        builder: (context, state) => const EditProfileScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/account/payments',
-        builder: (context, state) => const PaymentHistoryScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/support',
-        builder: (context, state) => const HelpSupportScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/support/create',
-        builder: (context, state) => const CreateTicketScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/support/tickets',
-        builder: (context, state) => const MyTicketsScreen(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/legal/:slug',
-        builder: (context, state) =>
-            StaticPageScreen(slug: state.pathParameters['slug']!),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/admin',
-        builder: (context, state) => const AdminControlScreen(),
       ),
     ],
   );

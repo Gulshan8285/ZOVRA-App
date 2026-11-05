@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/zovra_button.dart';
+import '../../../core/widgets/zovra_wordmark.dart';
 import '../providers/auth_provider.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
@@ -158,32 +159,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(7),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.spa_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'ZOVRA',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 2.0,
-                          color: AppColors.dark,
-                        ),
-                      ),
-                    ],
-                  ),
+                  const ZovraWordmark(fontSize: 22),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(

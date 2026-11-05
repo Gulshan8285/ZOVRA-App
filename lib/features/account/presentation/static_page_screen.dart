@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/zovra_wordmark.dart';
 
 class StaticPageScreen extends StatelessWidget {
   final String slug; // 'terms', 'privacy', 'about'
@@ -33,7 +34,7 @@ class StaticPageScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 60),
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -58,27 +59,11 @@ class StaticPageScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        'ZOVRA',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 2,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Container(
-                        width: 6,
-                        height: 6,
-                        margin: const EdgeInsets.only(left: 4, top: 6),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ],
+                  const ZovraWordmark(
+                    fontSize: 28,
+                    color: Colors.white,
+                    dotColor: AppColors.accentIcyBlue,
+                    letterSpacing: 2.0,
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -263,7 +248,7 @@ class StaticPageScreen extends StatelessWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 60),
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 100),
         children: [
           Text(
             'ZOVRA TERMS OF SERVICE',
@@ -326,7 +311,7 @@ class StaticPageScreen extends StatelessWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 14, 20, 60),
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 100),
         children: [
           Text(
             'PRIVACY & DATA PROTECTION',

@@ -101,7 +101,7 @@ class HomeScreen extends ConsumerWidget {
                               color: AppColors.primaryLight,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(Icons.spa_rounded, color: AppColors.primary, size: 16),
+                            child: const Icon(Icons.auto_awesome_rounded, color: AppColors.primary, size: 16),
                           ),
                           const SizedBox(width: 8),
                           Text(

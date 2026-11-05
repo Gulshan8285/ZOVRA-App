@@ -6,6 +6,7 @@ import '../../../core/services/whatsapp_share_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_time_utils.dart';
 import '../../../core/widgets/confirmation_dialog.dart';
+import '../../../core/widgets/zovra_wordmark.dart';
 import '../../../data/models/booking_model.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../bookings/providers/bookings_provider.dart';
@@ -246,7 +247,7 @@ class AccountScreen extends ConsumerWidget {
                         ],
                       ),
                       InkWell(
-                        onTap: () => context.push('/bookings'),
+                        onTap: () => context.push('/bookings?tab=0'),
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -280,7 +281,7 @@ class AccountScreen extends ConsumerWidget {
                         count: upcoming.length,
                         color: AppColors.primary,
                         bgColor: AppColors.primaryLight,
-                        onTap: () => context.push('/bookings'),
+                        onTap: () => context.push('/bookings?tab=0'),
                       ),
                       const SizedBox(width: 8),
                       _buildBookingStatusPill(
@@ -289,7 +290,7 @@ class AccountScreen extends ConsumerWidget {
                         count: completed.length,
                         color: AppColors.success,
                         bgColor: AppColors.successLight,
-                        onTap: () => context.push('/bookings'),
+                        onTap: () => context.push('/bookings?tab=1'),
                       ),
                       const SizedBox(width: 8),
                       _buildBookingStatusPill(
@@ -298,7 +299,7 @@ class AccountScreen extends ConsumerWidget {
                         count: cancelled.length,
                         color: AppColors.textMuted,
                         bgColor: AppColors.surfaceMuted,
-                        onTap: () => context.push('/bookings'),
+                        onTap: () => context.push('/bookings?tab=2'),
                       ),
                     ],
                   ),
@@ -392,7 +393,7 @@ class AccountScreen extends ConsumerWidget {
                 icon: Icons.calendar_today_rounded,
                 title: 'All Appointments & History',
                 subtitle: 'Upcoming, completed, cancellation & rebooking',
-                onTap: () => context.push('/bookings'),
+                onTap: () => context.push('/bookings?tab=0'),
               ),
               _buildMenuItem(
                 icon: Icons.location_on_rounded,
@@ -539,9 +540,15 @@ class AccountScreen extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
+            const ZovraWordmark(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+              letterSpacing: 1.5,
+            ),
+            const SizedBox(height: 4),
             Text(
-              'ZOVRA Version 1.0.0 (Production Release)',
+              'Version 1.0.0 (Production Release)',
               style: GoogleFonts.inter(fontSize: 11, color: AppColors.textMuted),
             ),
           ],

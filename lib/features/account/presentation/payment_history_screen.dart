@@ -32,7 +32,7 @@ class PaymentHistoryScreen extends ConsumerWidget {
               subtitle: 'Your payment receipts and transaction records will appear here.',
             )
           : ListView.separated(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
               itemCount: bookings.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {

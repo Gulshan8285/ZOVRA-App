@@ -52,10 +52,18 @@ class LocalStorageService {
       await saveAddresses(addresses);
     }
 
-    // Seed Bookings if not present
+    // Seed Bookings if not present or ensure completed booking exists
     if (!_prefs.containsKey(AppConstants.keyBookings)) {
       final bookings = InitialData.getInitialBookings();
       await saveBookings(bookings);
+    } else {
+      final currentBookings = getBookings();
+      if (!currentBookings.any((b) => b.status == BookingStatus.completed)) {
+        final seedCompleted = InitialData.getInitialBookings()
+            .where((b) => b.status == BookingStatus.completed);
+        final updated = [...currentBookings, ...seedCompleted];
+        await saveBookings(updated);
+      }
     }
 
     // Seed Reviews if not present or upgrade if seed has expanded

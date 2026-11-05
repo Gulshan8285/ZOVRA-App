@@ -53,7 +53,7 @@ class HelpSupportScreen extends ConsumerWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 90),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

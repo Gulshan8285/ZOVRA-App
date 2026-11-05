@@ -1093,15 +1093,26 @@ class InitialData {
   /// Sample demo bookings
   static List<BookingModel> getBookings() {
     final now = DateTime.now();
+    final services = getServices();
+    final dryMassage = services.firstWhere(
+      (s) => s.id == 'srv_dry_massage',
+      orElse: () => services.first,
+    );
+    final swedishMassage = services.firstWhere(
+      (s) => s.id == 'srv_swedish_massage',
+      orElse: () => services.length > 1 ? services[1] : services.first,
+    );
+
     return [
+      // 1. Upcoming Confirmed Booking
       BookingModel(
         id: 'ZOV-2026-891',
         userId: 'usr_guest',
         items: [
           CartItem(
             id: 'ci_demo_1',
-            service: getServices().firstWhere((s) => s.id == 'srv_dry_massage'),
-            selectedPackage: getServices().firstWhere((s) => s.id == 'srv_dry_massage').packages[1],
+            service: dryMassage,
+            selectedPackage: dryMassage.packages.isNotEmpty ? dryMassage.packages[0] : null,
             quantity: 1,
           ),
         ],
@@ -1123,6 +1134,39 @@ class InitialData {
         partnerAvatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80',
         createdAt: now.subtract(const Duration(hours: 3)),
         transactionId: 'TXN-UPI-9821734912',
+      ),
+
+      // 2. Verified Completed Booking
+      BookingModel(
+        id: 'ZOV-2026-754',
+        userId: 'usr_guest',
+        items: [
+          CartItem(
+            id: 'ci_demo_2',
+            service: swedishMassage,
+            selectedPackage: swedishMassage.packages.isNotEmpty ? swedishMassage.packages[0] : null,
+            quantity: 1,
+          ),
+        ],
+        scheduledDate: now.subtract(const Duration(days: 3)),
+        timeSlot: '04:00 PM - 05:30 PM',
+        address: getAddresses().first,
+        subtotal: 1249,
+        serviceDiscount: 450,
+        couponDiscount: 200,
+        couponCode: 'WELCOME20',
+        taxAmount: 224.82,
+        platformFee: 49,
+        totalAmount: 1322.82,
+        paymentMethod: 'UPI (Google Pay)',
+        paymentStatus: 'Paid',
+        status: BookingStatus.completed,
+        partnerName: 'Priya Sharma',
+        partnerPhone: '+91 98223 45678',
+        partnerRating: 5.0,
+        partnerAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
+        createdAt: now.subtract(const Duration(days: 4)),
+        transactionId: 'TXN-UPI-7749102834',
       ),
     ];
   }

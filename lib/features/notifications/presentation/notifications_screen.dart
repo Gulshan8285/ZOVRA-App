@@ -41,7 +41,7 @@ class NotificationsScreen extends ConsumerWidget {
               subtitle: 'We\'ll notify you about booking confirmations, arrivals & offers.',
             )
           : ListView.separated(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
               itemCount: notifications.length,
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
