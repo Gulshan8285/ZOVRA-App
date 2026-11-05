@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/zovra_button.dart';
 import '../../../core/widgets/zovra_wordmark.dart';
 import '../providers/auth_provider.dart';
 
@@ -49,13 +48,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-
-  Future<void> _handleDemoLogin() async {
-    await ref.read(authProvider.notifier).loginWithDemo();
-    if (mounted) {
-      context.go('/');
-    }
   }
 
   Future<void> _handleGoogleLogin() async {
@@ -287,46 +279,50 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
 
             const SizedBox(height: 28),
 
-            // Authentication Action Buttons
+            // Authentication Action (Official Google Sign-In Only)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  // Google Sign-In Button
+                  // Official Google Sign-In Button
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
+                    height: 54,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        side: const BorderSide(color: AppColors.border, width: 1.2),
+                        foregroundColor: AppColors.textPrimary,
+                        elevation: 2,
+                        shadowColor: Colors.black.withOpacity(0.12),
+                        side: const BorderSide(color: Color(0xFFDADCE0), width: 1.2),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
                       onPressed: authState.isLoading ? null : _handleGoogleLogin,
                       child: authState.isLoading
                           ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2.2, color: AppColors.primary),
                             )
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.network(
                                   'https://www.gstatic.com/images/branding/product/2x/googleg_48dp.png',
-                                  width: 22,
-                                  height: 22,
-                                  errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 24),
+                                  width: 24,
+                                  height: 24,
+                                  errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 26, color: AppColors.primary),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 14),
                                 Text(
-                                  'Continue with Google',
+                                  'Sign in with Google',
                                   style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 15,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.textPrimary,
+                                    letterSpacing: 0.2,
                                   ),
                                 ),
                               ],
@@ -334,30 +330,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 12),
-
-                  // Demo Account Login Button
-                  ZovraButton(
-                    text: 'Explore in Demo Mode',
-                    isLoading: authState.isLoading,
-                    icon: const Icon(Icons.play_circle_outline_rounded, color: Colors.white, size: 20),
-                    onPressed: _handleDemoLogin,
-                    height: 52,
-                  ),
-
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 18),
 
                   // Legal notice
                   Text(
                     'By continuing, you agree to ZOVRA\'s Terms of Service & Privacy Policy',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
-                      fontSize: 11,
+                      fontSize: 11.5,
                       color: AppColors.textMuted,
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
