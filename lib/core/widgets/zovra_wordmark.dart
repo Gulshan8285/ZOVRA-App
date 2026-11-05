@@ -4,12 +4,14 @@ import '../theme/app_colors.dart';
 
 /// Official ZOVRA Brand Wordmark
 /// Unified across Home header, Welcome screen, About ZOVRA, and Account.
+/// Supports clean "ZOVRA.com" typography with royal indigo accent dot.
 class ZovraWordmark extends StatelessWidget {
   final double fontSize;
   final Color color;
   final Color dotColor;
   final double letterSpacing;
   final bool showDot;
+  final bool showCom;
 
   const ZovraWordmark({
     super.key,
@@ -18,15 +20,18 @@ class ZovraWordmark extends StatelessWidget {
     this.dotColor = AppColors.primary,
     this.letterSpacing = 1.5,
     this.showDot = true,
+    this.showCom = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final double dotSize = (fontSize * 0.25).clamp(4.0, 8.0);
+    final double dotSize = (fontSize * 0.22).clamp(3.5, 6.5);
+    final double comFontSize = (fontSize * 0.58).clamp(9.0, 24.0);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
       children: [
         Text(
           'ZOVRA',
@@ -37,18 +42,37 @@ class ZovraWordmark extends StatelessWidget {
             color: color,
           ),
         ),
-        if (showDot)
+        if (showCom) ...[
           Container(
             width: dotSize,
             height: dotSize,
-            margin: EdgeInsets.only(left: fontSize * 0.14, top: fontSize * 0.18),
+            margin: EdgeInsets.symmetric(horizontal: fontSize * 0.08),
             decoration: BoxDecoration(
               color: dotColor,
               shape: BoxShape.circle,
             ),
           ),
+          Text(
+            'com',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: comFontSize,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.6,
+              color: dotColor,
+            ),
+          ),
+        ] else if (showDot) ...[
+          Container(
+            width: dotSize,
+            height: dotSize,
+            margin: EdgeInsets.only(left: fontSize * 0.12),
+            decoration: BoxDecoration(
+              color: dotColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ],
       ],
     );
   }
 }
-
