@@ -81,3 +81,4 @@ ZOVRA uses a unified data model between the **Flutter mobile app** (Local Reacti
 | `savedAddresses`| `JSON` | List of `{ houseNumber, building, street, city, pinCode, tag }` |
 | `totalSpend` | `REAL` | Aggregate lifetime order value |
 | `bookingCount` | `INTEGER` | Total completed bookings count |
+

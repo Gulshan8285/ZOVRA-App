@@ -97,3 +97,4 @@ Fetch and moderate customer reviews (Approve, Reject, or append official ZOVRA r
 ### Passphrase Authentication
 All admin endpoints require session validation with the master key:
 `zovra2026`
+

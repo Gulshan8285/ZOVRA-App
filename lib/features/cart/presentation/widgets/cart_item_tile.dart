@@ -16,16 +16,10 @@ class CartItemTile extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.surfaceGlassCard,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.borderGlass.withOpacity(0.35)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+        boxShadow: AppColors.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +38,7 @@ class CartItemTile extends ConsumerWidget {
                     width: 68,
                     height: 68,
                     color: AppColors.surfaceMuted,
-                    child: const Icon(Icons.spa, color: AppColors.textMuted),
+                    child: const Icon(Icons.spa_outlined, color: AppColors.textMuted),
                   ),
                 ),
               ),
@@ -58,7 +52,7 @@ class CartItemTile extends ConsumerWidget {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     if (item.selectedPackage != null) ...[
@@ -101,83 +95,88 @@ class CartItemTile extends ConsumerWidget {
               ),
               // Quantity Stepper
               Container(
-                height: 34,
+                height: 32,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.primaryBorder),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.primary, width: 1.2),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.remove, size: 14, color: AppColors.primary),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 28),
-                      onPressed: () {
+                    InkWell(
+                      onTap: () {
                         ref
                             .read(cartProvider.notifier)
                             .updateQuantity(item.id, item.quantity - 1);
                       },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 6),
+                        child: Icon(Icons.remove, size: 14, color: AppColors.primary),
+                      ),
                     ),
                     Text(
                       '${item.quantity}',
                       style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
                         color: AppColors.primary,
                         fontSize: 13,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.add, size: 14, color: AppColors.primary),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 28),
-                      onPressed: () {
+                    InkWell(
+                      onTap: () {
                         ref
                             .read(cartProvider.notifier)
                             .updateQuantity(item.id, item.quantity + 1);
                       },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 6),
+                        child: Icon(Icons.add, size: 14, color: AppColors.primary),
+                      ),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-
-          // Selected Add-ons Badges if present
           if (item.selectedAddOns.isNotEmpty) ...[
             const SizedBox(height: 10),
-            Divider(height: 12, color: AppColors.border.withOpacity(0.6)),
+            const Divider(color: AppColors.borderLight),
+            const SizedBox(height: 6),
             Text(
               'Add-ons:',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.inter(
                 fontSize: 11,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
                 color: AppColors.textMuted,
               ),
             ),
             const SizedBox(height: 4),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: item.selectedAddOns.map((addon) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceMuted,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Text(
-                    '+ ${addon.name} (${CurrencyFormatter.format(addon.price)})',
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
+            ...item.selectedAddOns.map(
+              (addon) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '+ ${addon.name}',
+                      style: GoogleFonts.inter(
+                        fontSize: 11.5,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
+                    Text(
+                      CurrencyFormatter.format(addon.price),
+                      style: GoogleFonts.inter(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ],

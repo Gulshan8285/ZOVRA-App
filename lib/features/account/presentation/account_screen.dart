@@ -141,7 +141,7 @@ class AccountScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0x2825D366), Color(0x1500D2FF)],
+                    colors: [Color(0x2225D366), Color(0x122563EB)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),

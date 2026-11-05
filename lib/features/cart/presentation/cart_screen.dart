@@ -26,14 +26,18 @@ class CartScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.surface,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          onPressed: () => context.pop(),
+        ),
         title: Text(
           'Therapy Cart',
           style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: Colors.white,
+            color: AppColors.textPrimary,
           ),
         ),
         actions: [
@@ -63,16 +67,17 @@ class CartScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceGlassCard,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: AppColors.borderGlass.withOpacity(0.35)),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.border, width: 1),
+                      boxShadow: AppColors.cardShadow,
                     ),
                     child: Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.18),
+                            color: AppColors.primaryLight,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(Icons.location_on_rounded, color: AppColors.primary, size: 20),
@@ -98,7 +103,7 @@ class CartScreen extends ConsumerWidget {
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                             ],
@@ -120,7 +125,7 @@ class CartScreen extends ConsumerWidget {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -138,8 +143,8 @@ class CartScreen extends ConsumerWidget {
                   OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 44),
-                      side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
-                      backgroundColor: AppColors.surfaceGlassCard,
+                      side: const BorderSide(color: AppColors.primaryBorder),
+                      backgroundColor: AppColors.surface,
                     ),
                     icon: const Icon(Icons.add_rounded, color: AppColors.primary, size: 18),
                     label: Text(
@@ -159,14 +164,15 @@ class CartScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceGlassCard,
-                      borderRadius: BorderRadius.circular(18),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: cartState.appliedCoupon != null
                             ? AppColors.success
-                            : AppColors.borderGlass.withOpacity(0.35),
+                            : AppColors.border,
                         width: cartState.appliedCoupon != null ? 1.4 : 1,
                       ),
+                      boxShadow: AppColors.cardShadow,
                     ),
                     child: Row(
                       children: [
@@ -215,7 +221,7 @@ class CartScreen extends ConsumerWidget {
                                       style: GoogleFonts.plusJakartaSans(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,
-                                        color: Colors.white,
+                                        color: AppColors.textPrimary,
                                       ),
                                     ),
                                     Text(
@@ -252,9 +258,10 @@ class CartScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceGlassCard,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: AppColors.borderGlass.withOpacity(0.35)),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.border, width: 1),
+                      boxShadow: AppColors.cardShadow,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,7 +275,7 @@ class CartScreen extends ConsumerWidget {
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const Spacer(),
@@ -308,7 +315,7 @@ class CartScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceGlassCard,
+                      color: AppColors.surface,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: AppColors.border),
                     ),
@@ -341,13 +348,13 @@ class CartScreen extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceGlass,
-                  border: Border(top: BorderSide(color: AppColors.borderGlass.withOpacity(0.35))),
+                  color: AppColors.surface,
+                  border: const Border(top: BorderSide(color: AppColors.border)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      blurRadius: 16,
-                      offset: const Offset(0, -4),
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, -3),
                     ),
                   ],
                 ),
@@ -378,7 +385,7 @@ class CartScreen extends ConsumerWidget {
                     Expanded(
                       child: ZovraButton(
                         text: 'Select Schedule',
-                        icon: const Icon(Icons.arrow_forward_rounded, color: AppColors.textOnPrimary, size: 18),
+                        icon: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 18),
                         onPressed: () {
                           if (selectedAddress == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -408,7 +415,7 @@ class CartScreen extends ConsumerWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Tip $label added to your booking!'),
-              backgroundColor: AppColors.surface,
+              backgroundColor: AppColors.dark,
               duration: const Duration(seconds: 1),
             ),
           );
@@ -419,7 +426,7 @@ class CartScreen extends ConsumerWidget {
           decoration: BoxDecoration(
             color: AppColors.surfaceMuted,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.borderGlass.withOpacity(0.3)),
+            border: Border.all(color: AppColors.border),
           ),
           child: Center(
             child: Text(
@@ -427,7 +434,7 @@ class CartScreen extends ConsumerWidget {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
           ),

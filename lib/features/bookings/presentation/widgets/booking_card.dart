@@ -18,16 +18,10 @@ class BookingCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceGlassCard,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.borderGlass),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+        boxShadow: AppColors.cardShadow,
       ),
       child: InkWell(
         onTap: () => context.push('/booking/${booking.id}'),

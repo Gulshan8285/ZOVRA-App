@@ -27,7 +27,7 @@ class LocalStorageService {
   }
 
   Future<void> _ensureInitialDataSeeded() async {
-    const String currentCatalogVersion = 'v4_zovra_2026_massage_glass';
+    const String currentCatalogVersion = 'v5_zovra_urban_company_clean';
     if (_prefs.getString('zovra_catalog_version') != currentCatalogVersion) {
       final services = InitialData.getServices();
       await saveServices(services);

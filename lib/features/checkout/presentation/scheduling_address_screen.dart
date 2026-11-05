@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
-import '../../../core/utils/date_time_utils.dart';
 import '../../../core/widgets/zovra_button.dart';
 import '../../addresses/presentation/widgets/location_picker_sheet.dart';
 import '../../addresses/providers/address_provider.dart';
@@ -15,8 +14,7 @@ class SchedulingAddressScreen extends ConsumerStatefulWidget {
   const SchedulingAddressScreen({super.key});
 
   @override
-  ConsumerState<SchedulingAddressScreen> createState() =>
-      _SchedulingAddressScreenState();
+  ConsumerState<SchedulingAddressScreen> createState() => _SchedulingAddressScreenState();
 }
 
 class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScreen> {
@@ -24,14 +22,26 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
   late String _selectedSlot;
   final TextEditingController _instructionsController = TextEditingController();
 
-  final List<DateTime> _dates = DateTimeUtils.getUpcomingDays(7);
-  final List<String> _timeSlots = DateTimeUtils.getStandardTimeSlots();
+  final List<DateTime> _dates = List.generate(
+    7,
+    (index) => DateTime.now().add(Duration(days: index)),
+  );
+
+  final List<String> _timeSlots = const [
+    '08:00 AM - 09:30 AM',
+    '10:00 AM - 11:30 AM',
+    '12:00 PM - 01:30 PM',
+    '02:30 PM - 04:00 PM',
+    '04:30 PM - 06:00 PM',
+    '06:30 PM - 08:00 PM',
+    '08:30 PM - 10:00 PM',
+  ];
 
   @override
   void initState() {
     super.initState();
     _selectedDate = _dates.first;
-    _selectedSlot = _timeSlots[1]; // default 11:00 AM - 12:30 PM
+    _selectedSlot = _timeSlots.first;
   }
 
   @override
@@ -49,14 +59,18 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.surface,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          onPressed: () => context.pop(),
+        ),
         title: Text(
           'Schedule & Location',
           style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: Colors.white,
+            color: AppColors.textPrimary,
           ),
         ),
       ),
@@ -69,9 +83,9 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.surfaceGlassCard,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.borderGlass.withOpacity(0.35)),
+                color: AppColors.primaryLight,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.primaryBorder),
               ),
               child: Row(
                 children: [
@@ -99,7 +113,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
@@ -125,13 +139,13 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                     child: Container(
                       width: 68,
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primary : AppColors.surfaceGlassCard,
+                        color: isSelected ? AppColors.primary : AppColors.surface,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: isSelected ? AppColors.primary : AppColors.borderGlass.withOpacity(0.35),
+                          color: isSelected ? AppColors.primary : AppColors.border,
                           width: 1.2,
                         ),
-                        boxShadow: isSelected ? AppColors.electricGlow : null,
+                        boxShadow: AppColors.cardShadow,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +155,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: isSelected ? AppColors.textOnPrimary : AppColors.textMuted,
+                              color: isSelected ? Colors.white : AppColors.textMuted,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -150,7 +164,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 18,
                               fontWeight: FontWeight.w800,
-                              color: isSelected ? AppColors.textOnPrimary : Colors.white,
+                              color: isSelected ? Colors.white : AppColors.textPrimary,
                             ),
                           ),
                         ],
@@ -169,7 +183,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
@@ -184,13 +198,13 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary : AppColors.surfaceGlassCard,
+                      color: isSelected ? AppColors.primary : AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isSelected ? AppColors.primary : AppColors.borderGlass.withOpacity(0.35),
+                        color: isSelected ? AppColors.primary : AppColors.border,
                         width: 1.2,
                       ),
-                      boxShadow: isSelected ? AppColors.electricGlow : null,
+                      boxShadow: AppColors.cardShadow,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -198,7 +212,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                         Icon(
                           Icons.access_time_rounded,
                           size: 14,
-                          color: isSelected ? AppColors.textOnPrimary : AppColors.primary,
+                          color: isSelected ? Colors.white : AppColors.primary,
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -206,7 +220,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: isSelected ? AppColors.textOnPrimary : Colors.white,
+                            color: isSelected ? Colors.white : AppColors.textPrimary,
                           ),
                         ),
                       ],
@@ -224,16 +238,17 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceGlassCard,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.borderGlass.withOpacity(0.35)),
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.border),
+                boxShadow: AppColors.cardShadow,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,7 +273,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                         ],
@@ -300,14 +315,14 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _instructionsController,
               maxLines: 2,
-              style: const TextStyle(color: Colors.white, fontSize: 13),
+              style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 13),
               decoration: const InputDecoration(
                 hintText: 'e.g. Ring doorbell twice, service elevator near lobby...',
               ),
@@ -321,13 +336,13 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
         child: Container(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
           decoration: BoxDecoration(
-            color: AppColors.surfaceGlass,
-            border: Border(top: BorderSide(color: AppColors.borderGlass.withOpacity(0.35))),
+            color: AppColors.surface,
+            border: const Border(top: BorderSide(color: AppColors.border)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.4),
-                blurRadius: 16,
-                offset: const Offset(0, -4),
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 12,
+                offset: const Offset(0, -3),
               ),
             ],
           ),
@@ -346,7 +361,7 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                     ),
                   ),
                   Text(
-                    '${DateFormat('d MMM').format(_selectedDate)}, ${_selectedSlot.split('-').first.trim()}',
+                    DateFormat('EEE, d MMM').format(_selectedDate),
                     style: GoogleFonts.inter(
                       fontSize: 11,
                       color: AppColors.textMuted,
@@ -354,29 +369,28 @@ class _SchedulingAddressScreenState extends ConsumerState<SchedulingAddressScree
                   ),
                 ],
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 24),
               Expanded(
                 child: ZovraButton(
                   text: 'Proceed to Payment',
-                  icon: const Icon(Icons.lock_rounded, color: AppColors.textOnPrimary, size: 18),
+                  icon: const Icon(Icons.payment_rounded, color: Colors.white, size: 18),
                   onPressed: () {
                     if (selectedAddress == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Please select an address.'),
+                          content: Text('Please select a delivery address.'),
                           backgroundColor: AppColors.warning,
                         ),
                       );
+                      LocationPickerSheet.show(context);
                       return;
                     }
-                    context.push(
-                      '/checkout/payment',
-                      extra: {
-                        'scheduledDate': _selectedDate.toIso8601String(),
-                        'timeSlot': _selectedSlot,
-                        'specialInstructions': _instructionsController.text.trim(),
-                      },
-                    );
+
+                    context.push('/checkout/payment', extra: {
+                      'scheduledDate': _selectedDate.toIso8601String(),
+                      'timeSlot': _selectedSlot,
+                      'notes': _instructionsController.text.trim(),
+                    });
                   },
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/services/whatsapp_share_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../reviews/providers/reviews_provider.dart';
 import '../providers/home_provider.dart';
 import 'widgets/banner_carousel.dart';
 import 'widgets/category_grid.dart';
@@ -19,65 +20,50 @@ class HomeScreen extends ConsumerWidget {
     final massageServices = ref.watch(massageServicesProvider);
     final popularServices = ref.watch(popularServicesProvider);
     final trendingServices = ref.watch(trendingServicesProvider);
+    final reviews = ref.watch(reviewsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 110),
+          padding: const EdgeInsets.only(bottom: 95),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top Header with Location, Live Cart, Unread Bell & Profile
               const HomeHeader(),
 
-              // 2026 Glass Search Bar
+              // Urban Company Clean Search Bar (No Filter Tune Icon)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: InkWell(
                   onTap: () => context.push('/explore'),
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(14),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceGlassCard,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: AppColors.borderGlass.withOpacity(0.35), width: 1.2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: AppColors.border, width: 1),
+                      boxShadow: AppColors.cardShadow,
                     ),
                     child: Row(
                       children: [
                         const Icon(
                           Icons.search_rounded,
                           color: AppColors.primary,
-                          size: 22,
+                          size: 20,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Search "Dry Massage", "Deep Tissue", "Swedish"...',
+                            'Search massage services, therapies and wellness...',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.inter(
                               color: AppColors.textMuted,
                               fontSize: 13.5,
                             ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(
-                            Icons.tune_rounded,
-                            color: AppColors.primary,
-                            size: 16,
                           ),
                         ),
                       ],
@@ -91,13 +77,13 @@ class HomeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: InkWell(
                   onTap: () => WhatsAppShareService.shareApp(),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                     decoration: BoxDecoration(
-                      color: AppColors.whatsapp.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.whatsapp.withOpacity(0.3), width: 1),
+                      color: AppColors.whatsapp.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.whatsapp.withOpacity(0.35), width: 1),
                     ),
                     child: Row(
                       children: [
@@ -114,7 +100,7 @@ class HomeScreen extends ConsumerWidget {
                           child: Text(
                             'Share ZOVRA wellness with friends & family on WhatsApp',
                             style: GoogleFonts.inter(
-                              color: Colors.white,
+                              color: AppColors.textPrimary,
                               fontSize: 11.5,
                               fontWeight: FontWeight.w600,
                             ),
@@ -127,12 +113,12 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
 
               // Promotional Editorial Banners Carousel
               const BannerCarousel(),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
 
               // FEATURED SECTION: Signature 1-Hr Therapies (Exact User Pricing)
               Padding(
@@ -140,16 +126,10 @@ class HomeScreen extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceGlassCard,
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: AppColors.borderGlass.withOpacity(0.4), width: 1.2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.35),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.border, width: 1),
+                    boxShadow: AppColors.cardShadow,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,7 +139,7 @@ class HomeScreen extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.2),
+                              color: AppColors.primaryLight,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(Icons.spa_rounded, color: AppColors.primary, size: 16),
@@ -178,15 +158,16 @@ class HomeScreen extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: AppColors.primary,
+                              color: AppColors.primaryLight,
                               borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: AppColors.primaryBorder),
                             ),
                             child: Text(
                               'ALL 1 HR SESSIONS',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w900,
-                                color: AppColors.textOnPrimary,
+                                color: AppColors.primary,
                               ),
                             ),
                           ),
@@ -196,9 +177,9 @@ class HomeScreen extends ConsumerWidget {
                       Text(
                         'Full Body Massage Experiences',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -217,9 +198,9 @@ class HomeScreen extends ConsumerWidget {
 
               const SizedBox(height: 14),
 
-              // Horizontal Carousel for the User-Priced Massage Options
+              // Horizontal Carousel for the Signature Therapies (Dry ₹849, Swedish ₹1249, Deep Tissue ₹1549, Sports ₹1749, Aroma ₹2049)
               SizedBox(
-                height: 310,
+                height: 300,
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   scrollDirection: Axis.horizontal,
@@ -229,25 +210,25 @@ class HomeScreen extends ConsumerWidget {
                     return FeaturedServiceCard(
                       service: massageServices[index],
                       isHorizontal: true,
-                      width: 270,
+                      width: 260,
                     );
                   },
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 22),
 
               // 10 Massage Subcategories Grid
               const CategoryGrid(),
 
               const SizedBox(height: 20),
 
-              // Trust & Ethical Care Quality Banner
+              // Trust & Quality Standards Banner
               const TrustMetricsBanner(),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 22),
 
-              // Popular Restorative Treatments
+              // Most Popular Massages
               _buildSectionHeader(
                 context,
                 title: 'Most Popular Massages',
@@ -256,7 +237,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 14),
               SizedBox(
-                height: 310,
+                height: 300,
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   scrollDirection: Axis.horizontal,
@@ -266,15 +247,15 @@ class HomeScreen extends ConsumerWidget {
                     return FeaturedServiceCard(
                       service: popularServices[index],
                       isHorizontal: true,
-                      width: 270,
+                      width: 260,
                     );
                   },
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 22),
 
-              // Couple & Luxury Spa Rituals (Full-Width List View)
+              // Luxury Spa Rituals & Couple Care
               _buildSectionHeader(
                 context,
                 title: 'Luxury Spa Rituals & Couple Care',
@@ -287,7 +268,7 @@ class HomeScreen extends ConsumerWidget {
                 child: Column(
                   children: trendingServices.map((service) {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 14),
+                      padding: const EdgeInsets.only(bottom: 12),
                       child: FeaturedServiceCard(
                         service: service,
                         isHorizontal: false,
@@ -296,6 +277,182 @@ class HomeScreen extends ConsumerWidget {
                   }).toList(),
                 ),
               ),
+
+              const SizedBox(height: 20),
+
+              // Verified Customer Testimonials Carousel
+              if (reviews.isNotEmpty) ...[
+                _buildSectionHeader(
+                  context,
+                  title: 'Client Experiences',
+                  subtitle: 'Real reviews from verified at-home sessions',
+                  onSeeAll: () => context.push('/explore'),
+                ),
+                const SizedBox(height: 14),
+                SizedBox(
+                  height: 150,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: reviews.take(6).length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      final rev = reviews[index];
+                      return Container(
+                        width: 280,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.border, width: 1),
+                          boxShadow: AppColors.cardShadow,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Row(
+                                  children: List.generate(
+                                    5,
+                                    (i) => Icon(
+                                      Icons.star_rounded,
+                                      size: 14,
+                                      color: i < rev.rating.floor()
+                                          ? AppColors.ratingGold
+                                          : AppColors.border,
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  rev.serviceName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 10,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Expanded(
+                              child: Text(
+                                '"${rev.comment}"',
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.inter(
+                                  fontSize: 11.5,
+                                  color: AppColors.textPrimary,
+                                  height: 1.35,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                const Icon(Icons.check_circle_rounded, size: 12, color: AppColors.success),
+                                const SizedBox(width: 4),
+                                Text(
+                                  rev.userName,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '• Verified Booking',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 10,
+                                    color: AppColors.textMuted,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 20),
+
+              // WhatsApp Help & Support Card
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.border, width: 1),
+                    boxShadow: AppColors.cardShadow,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.whatsapp.withOpacity(0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.support_agent_rounded, color: AppColors.whatsapp, size: 24),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Need help choosing a massage?',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Our wellness concierge is live 24/7 on WhatsApp',
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => WhatsAppShareService.shareApp(),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: AppColors.whatsapp,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'Chat',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -322,16 +479,16 @@ class HomeScreen extends ConsumerWidget {
                 Text(
                   title,
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 18,
+                    fontSize: 17,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
                   style: GoogleFonts.inter(
-                    fontSize: 12,
+                    fontSize: 11.5,
                     color: AppColors.textSecondary,
                   ),
                 ),

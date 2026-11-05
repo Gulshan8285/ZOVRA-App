@@ -48,9 +48,9 @@ class ZovraButton extends StatelessWidget {
         borderSide = const BorderSide(color: AppColors.primaryBorder, width: 1.2);
         break;
       case ZovraButtonVariant.glass:
-        bgColor = AppColors.surfaceGlassCard;
+        bgColor = AppColors.primaryLight;
         fgColor = AppColors.primary;
-        borderSide = const BorderSide(color: AppColors.borderGlass, width: 1);
+        borderSide = const BorderSide(color: AppColors.primaryBorder, width: 1);
         break;
       case ZovraButtonVariant.danger:
         bgColor = AppColors.errorLight;

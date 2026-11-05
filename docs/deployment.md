@@ -61,3 +61,4 @@ git commit -m "feat: ZOVRA 2026 Midnight Black UI and Admin CRM upgrade"
 git push origin main
 ```
 Vercel automatically compiles, runs typechecks, generates static pages, and deploys globally with instant edge caching.
+

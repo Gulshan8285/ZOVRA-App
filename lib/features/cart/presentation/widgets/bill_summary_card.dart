@@ -15,16 +15,10 @@ class BillSummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.surfaceGlassCard,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.borderGlass.withOpacity(0.35)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+        boxShadow: AppColors.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +28,7 @@ class BillSummaryCard extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 16,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 14),
@@ -70,9 +64,9 @@ class BillSummaryCard extends StatelessWidget {
             CurrencyFormatter.format(cartState.platformFee),
           ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Divider(color: AppColors.border.withOpacity(0.6)),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Divider(color: AppColors.borderLight),
           ),
 
           // Final Amount
@@ -84,7 +78,7 @@ class BillSummaryCard extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                 ),
               ),
               Text(
@@ -98,29 +92,26 @@ class BillSummaryCard extends StatelessWidget {
             ],
           ),
 
-          // Savings Pill
+          // Total Savings Highlight
           if (cartState.totalCustomerSavings > 0) ...[
             const SizedBox(height: 12),
             Container(
-              width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: AppColors.successLight,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.success.withOpacity(0.3)),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.successBorder),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.celebration_rounded, color: AppColors.success, size: 16),
+                  const Icon(Icons.savings_outlined, color: AppColors.success, size: 16),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Yay! You are saving ${CurrencyFormatter.format(cartState.totalCustomerSavings)} on this order',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.success,
-                      ),
+                  Text(
+                    'You are saving ${CurrencyFormatter.format(cartState.totalCustomerSavings)} on this order!',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.success,
                     ),
                   ),
                 ],
@@ -150,7 +141,7 @@ class BillSummaryCard extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: isGreen ? AppColors.success : Colors.white,
+              color: isGreen ? AppColors.success : AppColors.textPrimary,
             ),
           ),
         ],

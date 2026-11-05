@@ -72,23 +72,12 @@ class _BannerCarouselState extends ConsumerState<BannerCarousel> {
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: AppColors.borderGlass.withOpacity(0.4), width: 1.2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.45),
-                        blurRadius: 18,
-                        offset: const Offset(0, 8),
-                      ),
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.12),
-                        blurRadius: 20,
-                        spreadRadius: -4,
-                      ),
-                    ],
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.border, width: 1),
+                    boxShadow: AppColors.cardShadow,
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(20),
                     child: Stack(
                       children: [
                         // Background Luxury Spa Image
@@ -96,10 +85,10 @@ class _BannerCarouselState extends ConsumerState<BannerCarousel> {
                           child: Image.network(
                             banner.imageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(color: AppColors.surfaceCard),
+                            errorBuilder: (_, __, ___) => Container(color: AppColors.editorialNavy),
                           ),
                         ),
-                        // Dark Glass & Electric Blue Glow Gradient
+                        // Dark Navy Editorial Gradient
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(
@@ -107,8 +96,8 @@ class _BannerCarouselState extends ConsumerState<BannerCarousel> {
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
                                 colors: [
-                                  AppColors.background.withOpacity(0.92),
-                                  AppColors.background.withOpacity(0.65),
+                                  AppColors.editorialNavy.withOpacity(0.92),
+                                  AppColors.editorialNavy.withOpacity(0.65),
                                   Colors.black.withOpacity(0.20),
                                 ],
                               ),

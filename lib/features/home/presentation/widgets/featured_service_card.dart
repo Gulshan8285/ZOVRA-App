@@ -33,51 +33,31 @@ class FeaturedServiceCard extends ConsumerWidget {
       return Container(
         width: width,
         decoration: BoxDecoration(
-          color: AppColors.surfaceGlassCard,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: AppColors.borderGlass.withOpacity(0.35), width: 1.2),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.4),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border, width: 1),
+          boxShadow: AppColors.cardShadow,
         ),
         child: InkWell(
           onTap: () => context.push('/service/${service.id}'),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Image Header with tags & WhatsApp share button
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Stack(
                   children: [
                     Image.network(
                       service.imageUrl,
-                      height: 145,
+                      height: 140,
                       width: double.infinity,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                        height: 145,
+                        height: 140,
                         color: AppColors.surfaceMuted,
-                        child: const Icon(Icons.spa, size: 40, color: AppColors.textMuted),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              AppColors.background.withOpacity(0.85),
-                            ],
-                          ),
-                        ),
+                        child: const Icon(Icons.spa_outlined, size: 40, color: AppColors.textMuted),
                       ),
                     ),
                     // Rating Pill on bottom left
@@ -97,13 +77,12 @@ class FeaturedServiceCard extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.75),
+                          color: Colors.black.withOpacity(0.72),
                           borderRadius: BorderRadius.circular(6),
-                          border: Border.all(color: Colors.white12),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.timer_outlined, color: AppColors.accentIcyBlue, size: 11),
+                            const Icon(Icons.timer_outlined, color: Colors.white, size: 11),
                             const SizedBox(width: 4),
                             Text(
                               '${service.durationMinutes}m',
@@ -126,8 +105,8 @@ class FeaturedServiceCard extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
                           decoration: BoxDecoration(
                             color: AppColors.successLight,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.success.withOpacity(0.4)),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: AppColors.successBorder),
                           ),
                           child: Text(
                             'Save ${CurrencyFormatter.format(savings)}',
@@ -155,14 +134,19 @@ class FeaturedServiceCard extends ConsumerWidget {
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.65),
+                            color: Colors.white.withOpacity(0.9),
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                              ),
+                            ],
                           ),
                           child: const Icon(
                             Icons.share_rounded,
                             size: 14,
-                            color: Colors.white,
+                            color: AppColors.whatsapp,
                           ),
                         ),
                       ),
@@ -184,7 +168,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -193,7 +177,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.inter(
-                        fontSize: 11,
+                        fontSize: 11.5,
                         color: AppColors.textSecondary,
                         height: 1.35,
                       ),
@@ -213,7 +197,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w900,
-                                color: AppColors.primary,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             if (service.originalPrice > service.discountedPrice)
@@ -244,20 +228,14 @@ class FeaturedServiceCard extends ConsumerWidget {
     // Vertical Full-Width Card (List View)
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceGlassCard,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.borderGlass.withOpacity(0.3), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+        boxShadow: AppColors.cardShadow,
       ),
       child: InkWell(
         onTap: () => context.push('/service/${service.id}'),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Row(
@@ -292,7 +270,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -303,7 +281,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
-                            color: AppColors.primary,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -323,6 +301,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: AppColors.successLight,
                               borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: AppColors.successBorder),
                             ),
                             child: Text(
                               'Save ${CurrencyFormatter.format(savings)}',
@@ -342,7 +321,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.inter(
-                        fontSize: 11,
+                        fontSize: 11.5,
                         color: AppColors.textSecondary,
                         height: 1.35,
                       ),
@@ -371,7 +350,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                   Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(12),
                         child: Image.network(
                           service.imageUrl,
                           width: 105,
@@ -381,7 +360,7 @@ class FeaturedServiceCard extends ConsumerWidget {
                             width: 105,
                             height: 105,
                             color: AppColors.surfaceMuted,
-                            child: const Icon(Icons.spa, color: AppColors.textMuted),
+                            child: const Icon(Icons.spa_outlined, color: AppColors.textMuted),
                           ),
                         ),
                       ),
@@ -400,16 +379,22 @@ class FeaturedServiceCard extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.7),
+                              color: Colors.white.withOpacity(0.9),
                               shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.12),
+                                  blurRadius: 4,
+                                ),
+                              ],
                             ),
-                            child: const Icon(Icons.share_rounded, size: 12, color: Colors.white),
+                            child: const Icon(Icons.share_rounded, size: 12, color: AppColors.whatsapp),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   _buildCartActionButton(context, ref, quantityInCart),
                 ],
               ),
@@ -423,11 +408,11 @@ class FeaturedServiceCard extends ConsumerWidget {
   Widget _buildCartActionButton(BuildContext context, WidgetRef ref, int quantity) {
     if (quantity > 0) {
       return Container(
-        height: 34,
+        height: 32,
         padding: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
           color: AppColors.primaryLight,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: AppColors.primary, width: 1.2),
         ),
         child: Row(
@@ -489,21 +474,22 @@ class FeaturedServiceCard extends ConsumerWidget {
           SnackBar(
             content: Text('${service.name} added to cart!'),
             duration: const Duration(seconds: 1),
-            backgroundColor: AppColors.surface,
+            backgroundColor: AppColors.dark,
             behavior: SnackBarBehavior.floating,
           ),
         );
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
         decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(10),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.primary, width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: AppColors.primary.withOpacity(0.08),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
             ),
           ],
         ),
@@ -511,8 +497,8 @@ class FeaturedServiceCard extends ConsumerWidget {
           'ADD',
           style: GoogleFonts.plusJakartaSans(
             fontSize: 13,
-            fontWeight: FontWeight.w900,
-            color: AppColors.textOnPrimary,
+            fontWeight: FontWeight.w800,
+            color: AppColors.primary,
             letterSpacing: 0.5,
           ),
         ),

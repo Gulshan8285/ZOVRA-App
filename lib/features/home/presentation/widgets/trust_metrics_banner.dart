@@ -11,21 +11,10 @@ class TrustMetricsBanner extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.surfaceGlassCard,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.borderGlass.withOpacity(0.35), width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.4),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
-            blurRadius: 16,
-            spreadRadius: -4,
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.border, width: 1),
+        boxShadow: AppColors.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,9 +24,8 @@ class TrustMetricsBanner extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.2),
+                  color: AppColors.primaryLight,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.primary.withOpacity(0.4)),
                 ),
                 child: const Icon(
                   Icons.verified_user_rounded,
@@ -61,7 +49,7 @@ class TrustMetricsBanner extends StatelessWidget {
           Text(
             '5-Star Luxury Standards at Home',
             style: GoogleFonts.plusJakartaSans(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w800,
             ),
@@ -86,23 +74,31 @@ class TrustMetricsBanner extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: AppColors.primary, size: 20),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(
+              color: AppColors.primaryLight,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 18),
+          ),
           const SizedBox(height: 6),
           Text(
             title,
             textAlign: TextAlign.center,
             style: GoogleFonts.plusJakartaSans(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 11,
               fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: 2),
           Text(
             subtitle,
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
-              color: AppColors.textMuted,
-              fontSize: 9,
+              color: AppColors.textSecondary,
+              fontSize: 9.5,
             ),
           ),
         ],
